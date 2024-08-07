@@ -1,0 +1,27 @@
+image: docker:24.0
+variables:
+  DEV_SERVER: '10.1.1.210'
+  PRODUCTION_USER: 'runner'
+
+stages:
+    - prod
+
+prod: 
+  stage: prod
+  only:
+    - master
+  when: manual
+  allow_failure: false
+  before_script:
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - eval $(ssh-agent -s)
+    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+    - ssh-add <(echo "$SSH_PRIVATE_KEY")
+    
+  script:
+    - echo "Deploying to dev server"
+    - ssh -oStrictHostKeyChecking=no $PRODUCTION_USER@$DEV_SERVER "cd /srv/project/docker/navbatda.uz-2.0-backend; sudo git reset --hard; sudo git -C /srv/project/docker/navbatda.uz-2.0-backend pull"
+    - ssh -oStrictHostKeyChecking=no $PRODUCTION_USER@$DEV_SERVER "bash -s" < ./build.sh
+    - echo "Dev Deployed"
+    
