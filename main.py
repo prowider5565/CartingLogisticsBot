@@ -1,7 +1,8 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from aiogram import types
-from bot.config import dp, bot
+
 from bot.settings import settings
+from bot.config import dp, bot
 
 
 app = FastAPI()

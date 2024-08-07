@@ -4,3 +4,4 @@ pydantic
 uvicorn
 pydantic-settings
 fastapi
+requests
