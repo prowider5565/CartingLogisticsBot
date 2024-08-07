@@ -6,6 +6,8 @@ class Settings(BaseSettings):
     DOMAIN: str
     MODE: str
     HOST: str
+    WEB_HOST: str
+    PORT: int
 
     class Config:
         env_file = ".env"

@@ -1,15 +1,5 @@
 #!/bin/bash
 
 echo "Running migration.sh script..."
-
-
-
-alembic revision --autogenerate -m "create models"
-echo "revision complated"
-
-alembic upgrade head
-echo "upgrade complated"
-
-
-
-echo "Migration script completed."
+uvicorn main:app --host 0.0.0.0 --port 8000
+echo "Uvicorn server and Webhook bot initiated successfully!"

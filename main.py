@@ -1,11 +1,13 @@
-from fastapi import FastAPI, Request, HTTPException
-from aiogram import Bot, types
-from bot. import dp, bot
+from fastapi import FastAPI, Request
+from aiogram import types
+from bot.config import dp, bot
+from bot.settings import settings
+
 
 app = FastAPI()
 
 WEBHOOK_PATH = f"/webhook/{bot.token}"
-WEBHOOK_URL = f"https://your-domain.com{WEBHOOK_PATH}"
+WEBHOOK_URL = f"{settings.HOST}{WEBHOOK_PATH}"
 
 
 @app.on_event("startup")
@@ -19,15 +21,12 @@ async def on_shutdown():
 
 
 @app.post(WEBHOOK_PATH)
-async def process_webhook(request: Request):
-    update = types.Update(**await request.json())
-    Bot.set_current(dp.bot)
-    Dispatcher.set_current(dp)
-    await dp.process_update(update)
-    return {}
+async def bot_webhook_handler(update: dict):
+    telegram_update = types.Update(**update)
+    await dp.feed_update(bot=bot, update=telegram_update)
 
 
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host=settings.WEB_HOST, port=settings.PORT)
