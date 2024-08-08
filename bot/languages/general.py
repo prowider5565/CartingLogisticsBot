@@ -48,5 +48,10 @@ lang = {
         "uz": "Telefon raqamni ulashish",
         "en": "Share contact",
         "ru": "Поделиться контактом",
-    }
+    },
+    "warm_greeting": lambda full_name: {
+        "uz": f"Xush kelibsiz {full_name}, bugun sizga qanday yordam berishim mumkin?",
+        "ru": f"Привет {full_name}, чем я могу тебе помочь сегодня?",
+        "en": f"Welcome {full_name}, how can I help you today?",
+    },
 }

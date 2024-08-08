@@ -3,16 +3,18 @@ from aiogram import Router, types, F
 import requests
 
 from bot.roles.general.keyboards.reply.contact import share_contact_markup
+from bot.roles.general.generators.get_scheme import get_context
 from bot.roles.general.states.auth_state import Authentication
 from bot.nosql.config import users_collection
+from bot.utils import silent_delete_message
 from bot.utils import locale, logger as l
 from bot.languages.general import lang
 from bot.settings import settings
 
-auth_router = Router()
+register_router = Router()
 
 
-@auth_router.message(Authentication.lang)
+@register_router.message(Authentication.lang)
 async def set_language(message: types.Message, state: FSMContext):
     language = {"🇺🇿 O'zbekcha": "uz", "🇷🇺 Русский": "ru", "🇬🇧 English": "en"}
     current_lang = language[message.text]
@@ -24,7 +26,7 @@ async def set_language(message: types.Message, state: FSMContext):
     await state.set_state(Authentication.phone_number)
 
 
-@auth_router.message(
+@register_router.message(
     Authentication.phone_number, F.content_type.in_({"contact", "text"})
 )
 async def phone_number_handler(message: types.Message, state: FSMContext):
@@ -57,7 +59,7 @@ async def phone_number_handler(message: types.Message, state: FSMContext):
     await state.set_state(Authentication.otp)
 
 
-@auth_router.message(Authentication.otp)
+@register_router.message(Authentication.otp)
 async def otp_handler(message: types.Message, state: FSMContext):
     data = await state.get_data()
     if not message.text.isdigit() and len(message.text) != 4:
@@ -78,9 +80,10 @@ async def otp_handler(message: types.Message, state: FSMContext):
     await state.set_state(Authentication.password)
 
 
-@auth_router.message(Authentication.password)
+@register_router.message(Authentication.password)
 async def password_handler(message: types.Message, state: FSMContext):
     await state.update_data(password=message.text)
+    await silent_delete_message(message)
     data = await state.get_data()
     response = requests.post(
         f"{settings.DOMAIN}/register_user",
@@ -91,7 +94,15 @@ async def password_handler(message: types.Message, state: FSMContext):
         },
     )
     await message.answer(lang["authentication_succeeded"][await locale(state)])
-    await state.clear()
+    l.info("User credentials are saved to daabase successfully...")
+    l.info(response.json())
     users_collection.insert_one(
-        {"user_id": message.from_user.id, "credentials": response.json()}
+        get_context(
+            message.from_user.id,
+            response.json(),
+            data["phone_number"],
+            data["password"],
+            await locale(state),
+        )
     )
+    await state.clear()
