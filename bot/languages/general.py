@@ -34,4 +34,14 @@ lang = {
         "en": "This phone number already exists in the system!",
         "ru": "На этот номер телефона уже есть в системе!",
     },
+    "invalid_otp_code": {
+        "uz": "OTP kodi yaroqsiz! Faqat 4 ta raqamli son kiriting!",
+        "en": "Invalid OTP code! Only contain 4 digits of numbers!",
+        "ru": "Неверный OTP! Просто введите 4-значный номер!",
+    },
+    "invalid_phone_number": {
+        "uz": "Telefon raqamingiz yaroqsiz! Faqat 12 ta raqamli son kiriting, bir qandayning uchun +998900000000 ga boshlanishi kerak!",
+        "en": "Invalid phone number! Only contain 12 digits of numbers, start with +998900000000!",
+        "ru": "Неверный номер телефона! Просто введите 12-значный номер, начинающийся с +998900000000!",
+    },
 }

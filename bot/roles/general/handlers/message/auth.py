@@ -21,35 +21,50 @@ async def set_language(message: types.Message, state: FSMContext):
 
 @auth_router.message(Authentication.phone_number)
 async def phone_number_handler(message: types.Message, state: FSMContext):
-    request_otp = requests.get(f"{settings.DOMAIN}/check_phone?username={message.text}")
-    l.info(request_otp.text)
-    if request_otp.json()["data"]["check_phone"]:
-        await message.answer(lang["phone_number_already_exists"][await locale(state)])
-    otp_code, sms_id = (
-        request_otp.json()["data"]["sms_code"],
-        request_otp.json()["data"]["sms_insert"]["id"],
-    )
-    await state.update_data(phone_number=message.text, otp=otp_code, sms_id=sms_id)
-    await message.answer(
-        lang["enter_your_otp_code"][await locale(state)] + str(otp_code)
-    )
-    await state.set_state(Authentication.otp)
+    if (
+        message.text.startswith("+998")
+        and message.text[1:].isdigit()
+        and len(message.text) in range(8, 15)
+    ):
+        request_otp = requests.get(
+            f"{settings.DOMAIN}/check_phone?username={message.text}"
+        )
+        if request_otp.json()["data"]["check_phone"]:
+            await message.answer(
+                lang["phone_number_already_exists"][await locale(state)]
+            )
+        otp_code, sms_id = (
+            request_otp.json()["data"]["sms_code"],
+            request_otp.json()["data"]["sms_insert"]["id"],
+        )
+        await state.update_data(phone_number=message.text, sms_id=sms_id)
+        await message.answer(
+            lang["enter_your_otp_code"][await locale(state)] + str(otp_code)
+        )
+        await state.set_state(Authentication.otp)
+    else:
+        await message.answer(lang["invalid_phone_number"][await locale(state)])
+        await state.set_state(Authentication.phone_number)
 
 
 @auth_router.message(Authentication.otp)
 async def otp_handler(message: types.Message, state: FSMContext):
     data = await state.get_data()
-    response = requests.put(
-        f"{settings.DOMAIN}/confirmed_sms?id={data['sms_id']}&sms_code={data['otp']}"
-    )
-    l.info(response.json())
-    context = response.json()
-    if context.get("data", None) is not None:
-        if context["data"].get("check_sms", None) is not None:
-            await message.answer(lang["enter_password"][await locale(state)])
-            await state.set_state(Authentication.password)
+    if message.text.isdigit() and len(message.text) == 4:
+        response = requests.put(
+            f"{settings.DOMAIN}/confirmed_sms?id={data['sms_id']}&sms_code={int(message.text)}"
+        )
+        l.info(response.json())
+        context = response.json()
+        if context.get("data", None) is not None:
+            if context["data"].get("check_sms", None) is not None:
+                await message.answer(lang["enter_password"][await locale(state)])
+                await state.set_state(Authentication.password)
+        else:
+            await message.answer(lang["incorrect_otp_code"][await locale(state)])
+            await state.set_state(Authentication.otp)
     else:
-        await message.answer(lang["incorrect_otp_code"][await locale(state)])
+        await message.answer(lang["invalid_otp_code"][await locale(state)])
         await state.set_state(Authentication.otp)
 
 
@@ -70,4 +85,3 @@ async def password_handler(message: types.Message, state: FSMContext):
     users_collection.insert_one(
         {"user_id": message.from_user.id, "credentials": response.json()}
     )
-    
