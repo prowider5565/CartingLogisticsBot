@@ -1,7 +1,7 @@
 from aiogram.fsm.state import State, StatesGroup
 
 
-class Authentication(StatesGroup):
+class Registration(StatesGroup):
     lang = State()
     phone_number = State()
     username = State()

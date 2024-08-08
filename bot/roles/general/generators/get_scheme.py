@@ -1,5 +1,5 @@
 """
-Example Successful Authenticaiton reponse in JSON:
+Example Successful Authenticaton reponse in JSON:
 
 {
     "error": null,
@@ -45,7 +45,7 @@ def get_context(user_id, response_data, phone_number, password, locale):
 
     Parameters:
     user_id (str): The unique identifier of the user.
-    response_data (dict): The JSON response data from the authentication process.
+    response_data (dict): The JSON response data from the Registration process.
     phone_number (str): The user's phone number.
     password (str): The user's password.
     locale (str): The user's locale (language preference).

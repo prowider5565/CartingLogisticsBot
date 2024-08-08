@@ -3,18 +3,20 @@ from aiogram import Router, types, F
 import requests
 
 from bot.roles.general.keyboards.reply.contact import share_contact_markup
+from bot.roles.general.keyboards.inline import user_menu_markup
 from bot.roles.general.generators.get_scheme import get_context
-from bot.roles.general.states.auth_state import Authentication
+from bot.roles.general.states.auth_state import Registration
 from bot.nosql.config import users_collection
 from bot.utils import silent_delete_message
 from bot.utils import locale, logger as l
 from bot.languages.general import lang
 from bot.settings import settings
 
+
 register_router = Router()
 
 
-@register_router.message(Authentication.lang)
+@register_router.message(Registration.lang)
 async def set_language(message: types.Message, state: FSMContext):
     language = {"🇺🇿 O'zbekcha": "uz", "🇷🇺 Русский": "ru", "🇬🇧 English": "en"}
     current_lang = language[message.text]
@@ -23,11 +25,11 @@ async def set_language(message: types.Message, state: FSMContext):
         lang["enter_phone_number"][current_lang],
         reply_markup=share_contact_markup(current_lang),
     )
-    await state.set_state(Authentication.phone_number)
+    await state.set_state(Registration.phone_number)
 
 
 @register_router.message(
-    Authentication.phone_number, F.content_type.in_({"contact", "text"})
+    Registration.phone_number, F.content_type.in_({"contact", "text"})
 )
 async def phone_number_handler(message: types.Message, state: FSMContext):
     if message.content_type == "text":
@@ -40,7 +42,7 @@ async def phone_number_handler(message: types.Message, state: FSMContext):
         and len(phone_number) in range(8, 15)
     ):
         await message.answer(lang["invalid_phone_number"][await locale(state)])
-        await state.set_state(Authentication.phone_number)
+        await state.set_state(Registration.phone_number)
         return
 
     request_otp = requests.get(f"{settings.DOMAIN}/check_phone?username={phone_number}")
@@ -56,15 +58,15 @@ async def phone_number_handler(message: types.Message, state: FSMContext):
     await message.answer(
         lang["enter_your_otp_code"][await locale(state)] + str(otp_code)
     )
-    await state.set_state(Authentication.otp)
+    await state.set_state(Registration.otp)
 
 
-@register_router.message(Authentication.otp)
+@register_router.message(Registration.otp)
 async def otp_handler(message: types.Message, state: FSMContext):
     data = await state.get_data()
     if not message.text.isdigit() and len(message.text) != 4:
         await message.answer(lang["invalid_otp_code"][await locale(state)])
-        await state.set_state(Authentication.otp)
+        await state.set_state(Registration.otp)
         return
     response = requests.put(
         f"{settings.DOMAIN}/confirmed_sms?id={data['sms_id']}&sms_code={int(message.text)}"
@@ -73,14 +75,14 @@ async def otp_handler(message: types.Message, state: FSMContext):
     context = response.json()
     if context.get("data", None) is None:
         await message.answer(lang["incorrect_otp_code"][await locale(state)])
-        await state.set_state(Authentication.otp)
+        await state.set_state(Registration.otp)
         return
 
     await message.answer(lang["enter_password"][await locale(state)])
-    await state.set_state(Authentication.password)
+    await state.set_state(Registration.password)
 
 
-@register_router.message(Authentication.password)
+@register_router.message(Registration.password)
 async def password_handler(message: types.Message, state: FSMContext):
     await state.update_data(password=message.text)
     await silent_delete_message(message)
@@ -93,7 +95,10 @@ async def password_handler(message: types.Message, state: FSMContext):
             "id": data["sms_id"],
         },
     )
-    await message.answer(lang["authentication_succeeded"][await locale(state)])
+    await message.answer(
+        lang["Registration_succeeded"][await locale(state)],
+        reply_markup=user_menu_markup,
+    )
     l.info("User credentials are saved to daabase successfully...")
     l.info(response.json())
     users_collection.insert_one(

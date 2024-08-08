@@ -3,14 +3,12 @@ from aiogram.fsm.context import FSMContext
 from aiogram.filters import Command
 import logging
 
-from bot.roles.general.keyboards.reply.lang import language_keyboards
 from bot.roles.general.handlers.message.register import register_router
-
-# from bot.roles.general.handlers.message.login import register_router
-from bot.roles.general.states.auth_state import Authentication
+from bot.roles.general.keyboards.reply.lang import language_keyboards
+from bot.roles.general.handlers.message.logout import logout_router
+from bot.roles.general.states.auth_state import Registration
 from bot.nosql.config import users_collection
 from bot.languages.general import lang
-from bot.utils import logger as l
 from bot.utils import get_user
 from .settings import settings
 
@@ -19,12 +17,12 @@ logging.basicConfig(level=logging.INFO)
 bot = Bot(token=settings.BOT_TOKEN)
 dp = Dispatcher()
 dp.include_router(register_router)
+dp.include_router(logout_router)
 
 
 @dp.message(Command("start"))
 async def send_welcome(message: types.Message, state: FSMContext):
     user = get_user(message.from_user.id)
-    l.info(user)
     if user:
         greeting = lang["warm_greeting"](message.from_user.full_name)[user["locale"]]
         await message.answer(greeting)
@@ -33,7 +31,7 @@ async def send_welcome(message: types.Message, state: FSMContext):
             f"Xush kelibsiz {message.from_user.full_name}!\nIltimos tilingizni tanlang",
             reply_markup=language_keyboards,
         )
-        await state.set_state(Authentication.lang)
+        await state.set_state(Registration.lang)
 
 
 @dp.message(Command("/flushall"))

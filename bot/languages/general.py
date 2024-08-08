@@ -14,7 +14,7 @@ lang = {
         "en": "Enter your password:",
         "ru": "Введите ваш пароль:",
     },
-    "authentication_succeeded": {
+    "Registration_succeeded": {
         "uz": "Tizimga ruxsat qilingdi!",
         "en": "You have successfully authenticated!",
         "ru": "Вы успешно авторизованы!",
@@ -54,4 +54,15 @@ lang = {
         "ru": f"Привет {full_name}, чем я могу тебе помочь сегодня?",
         "en": f"Welcome {full_name}, how can I help you today?",
     },
+    "logout_success": {
+        "uz": "Siz tizimdan muvaffaqiyatli chiqdingiz!",
+        "en": "You have successfully logged out!",
+        "ru": "Вы успешно вышли из системы!",
+    },
+    "not_registered": {
+        "uz": "Siz tizimdan ro'yxatdan otmagansiz!",
+        "en": "You are not registered in the system!",
+        "ru": "Вы не зарегистрированы в системе!",
+    },
+    "logout": {"uz": "Chiqish", "en": "Logout", "ru": "Выйти"},
 }
