@@ -10,3 +10,17 @@ services:
       - .env
     volumes:
       - .:/app
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - "${MONGO_PORT}:${MONGO_PORT}"
+    volumes:
+      - mongo-data:/data/db
+    env_file:
+      - .env
+
+volumes:
+  mongo-data:

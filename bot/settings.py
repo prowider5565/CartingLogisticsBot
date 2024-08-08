@@ -9,6 +9,12 @@ class Settings(BaseSettings):
     WEB_HOST: str
     PORT: int
 
+    # Database credentials
+    MONGO_HOST: str
+    MONGO_PORT: int
+    MONGO_NAME: str
+    MONGO_TZ_AWARE: bool
+
     class Config:
         env_file = ".env"
 

@@ -3,9 +3,10 @@ from aiogram import Router, types
 import requests
 
 from bot.roles.general.states.auth_state import Authentication
+from bot.nosql.config import users_collection
+from bot.utils import locale, logger as l
 from bot.languages.general import lang
 from bot.settings import settings
-from bot.utils import locale, logger as l
 
 auth_router = Router()
 
@@ -64,6 +65,9 @@ async def password_handler(message: types.Message, state: FSMContext):
             "id": data["sms_id"],
         },
     )
-    await message.answer(str(response))
-    # await message.answer(lang["authentication_succeeded"][await locale(state)])
+    await message.answer(lang["authentication_succeeded"][await locale(state)])
     await state.clear()
+    users_collection.insert_one(
+        {"user_id": message.from_user.id, "credentials": response.json()}
+    )
+    
