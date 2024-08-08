@@ -3,7 +3,7 @@ from aiogram import Router, types, F
 import requests
 
 from bot.roles.general.keyboards.reply.contact import share_contact_markup
-from bot.roles.general.keyboards.inline import user_menu_markup
+from bot.roles.general.keyboards.inline.user_menu import user_menu_markup
 from bot.roles.general.generators.get_scheme import get_context
 from bot.roles.general.states.auth_state import Registration
 from bot.nosql.config import users_collection
@@ -85,6 +85,7 @@ async def otp_handler(message: types.Message, state: FSMContext):
 @register_router.message(Registration.password)
 async def password_handler(message: types.Message, state: FSMContext):
     await state.update_data(password=message.text)
+    current_locale = await locale(state)
     await silent_delete_message(message)
     data = await state.get_data()
     response = requests.post(
@@ -96,8 +97,8 @@ async def password_handler(message: types.Message, state: FSMContext):
         },
     )
     await message.answer(
-        lang["Registration_succeeded"][await locale(state)],
-        reply_markup=user_menu_markup,
+        lang["Registration_succeeded"][current_locale],
+        reply_markup=user_menu_markup(current_locale),
     )
     l.info("User credentials are saved to daabase successfully...")
     l.info(response.json())
@@ -107,7 +108,7 @@ async def password_handler(message: types.Message, state: FSMContext):
             response.json(),
             data["phone_number"],
             data["password"],
-            await locale(state),
+            current_locale,
         )
     )
     await state.clear()

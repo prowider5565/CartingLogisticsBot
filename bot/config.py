@@ -1,15 +1,9 @@
-from aiogram import Bot, Dispatcher, types
-from aiogram.fsm.context import FSMContext
-from aiogram.filters import Command
+from aiogram import Bot, Dispatcher
 import logging
 
 from bot.roles.general.handlers.message.register import register_router
-from bot.roles.general.keyboards.reply.lang import language_keyboards
 from bot.roles.general.handlers.message.logout import logout_router
-from bot.roles.general.states.auth_state import Registration
-from bot.nosql.config import users_collection
-from bot.languages.general import lang
-from bot.utils import get_user
+from bot.roles.general.handlers.commands import command_router
 from .settings import settings
 
 
@@ -18,23 +12,4 @@ bot = Bot(token=settings.BOT_TOKEN)
 dp = Dispatcher()
 dp.include_router(register_router)
 dp.include_router(logout_router)
-
-
-@dp.message(Command("start"))
-async def send_welcome(message: types.Message, state: FSMContext):
-    user = get_user(message.from_user.id)
-    if user:
-        greeting = lang["warm_greeting"](message.from_user.full_name)[user["locale"]]
-        await message.answer(greeting)
-    else:
-        await message.reply(
-            f"Xush kelibsiz {message.from_user.full_name}!\nIltimos tilingizni tanlang",
-            reply_markup=language_keyboards,
-        )
-        await state.set_state(Registration.lang)
-
-
-@dp.message(Command("/flushall"))
-async def flush_all(message: types.Message, state: FSMContext):
-    users_collection.delete_many({})
-    await message.answer("All data has been deleted successfully!")
+dp.include_router(command_router)

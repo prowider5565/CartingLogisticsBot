@@ -64,5 +64,10 @@ lang = {
         "en": "You are not registered in the system!",
         "ru": "Вы не зарегистрированы в системе!",
     },
+    "logged_out": {
+        "uz": "Siz tizimdan chiqib ketgansiz!",
+        "en": "You have logged out!",
+        "ru": "Вы вышли из системы!",
+    },
     "logout": {"uz": "Chiqish", "en": "Logout", "ru": "Выйти"},
 }

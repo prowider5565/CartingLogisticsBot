@@ -1,7 +1,9 @@
 from aiogram.exceptions import TelegramBadRequest
+import requests
 import logging
 
 from bot.nosql.config import users_collection
+from bot.settings import settings
 
 
 logger = logging.getLogger(__name__)
@@ -19,9 +21,27 @@ async def silent_delete_message(message):
         return
 
 
-def get_user(user_id) -> dict:
+def get_user(user_id: int) -> dict:
     user = users_collection.find_one({"user_id": user_id})
-    logger.info(list(users_collection.find({})))
-    if user is None:
-        return {}
-    return user["credentials"]
+
+    if not user:
+        return {"status": "NOT_REGISTERED"}
+
+    credentials = user.get("credentials", {})
+    token = credentials.get("token", {}).get("access_token")
+
+    if not token:
+        credentials["status"] = "LOGGED_OUT"
+        return credentials
+
+    url = f"{settings.DOMAIN}/accounts/profile"
+    headers = {"Authorization": f"Bearer {token}"}
+
+    response = requests.get(url, headers=headers)
+
+    if response.status_code == 200 and response.json().get("data"):
+        credentials["status"] = "OK"
+    else:
+        credentials["status"] = "LOGGED_OUT"
+
+    return credentials
