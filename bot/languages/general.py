@@ -44,4 +44,9 @@ lang = {
         "en": "Invalid phone number! Only contain 12 digits of numbers, start with +998900000000!",
         "ru": "Неверный номер телефона! Просто введите 12-значный номер, начинающийся с +998900000000!",
     },
+    "share_contact": {
+        "uz": "Telefon raqamni ulashish",
+        "en": "Share contact",
+        "ru": "Поделиться контактом",
+    }
 }
