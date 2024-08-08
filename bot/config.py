@@ -21,4 +21,4 @@ async def send_welcome(message: types.Message, state: FSMContext):
         f"Xush kelibsiz {message.from_user.full_name}!\nIltimos tilingizni tanlang",
         reply_markup=language_keyboards,
     )
-    await state.set_state(Authentication.phone_number)
+    await state.set_state(Authentication.lang)

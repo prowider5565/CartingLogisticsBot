@@ -9,11 +9,6 @@ lang = {
         "en": "Enter your phone number:",
         "ru": "Введите ваш номер телефона:",
     },
-    "enter_fullname": {
-        "uz": "Ismingizni va familiyangizni kiriting:",
-        "en": "Enter your full name:",
-        "ru": "Введите ваше полное имя и фамилию:",
-    },
     "enter_password": {
         "uz": "Parolni kiriting:",
         "en": "Enter your password:",
@@ -33,5 +28,10 @@ lang = {
         "uz": "OTP kодi noto'g'ri! Qayta urinib ko'ring!",
         "en": "Incorrect OTP code! Please try again!",
         "ru": "Неверный OTP код! Пожалуйста, попробуйте еще раз",
+    },
+    "phone_number_already_exists": {
+        "uz": "Bunday telefon raqam allaqachon mavjud!",
+        "en": "This phone number already exists in the system!",
+        "ru": "На этот номер телефона уже есть в системе!",
     },
 }

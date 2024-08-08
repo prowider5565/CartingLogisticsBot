@@ -8,3 +8,4 @@ langs = [
 ]
 
 language_keyboards = ReplyKeyboardMarkup(keyboard=[langs], resize_keyboard=True)
+
