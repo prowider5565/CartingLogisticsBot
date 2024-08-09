@@ -34,9 +34,9 @@ class AuthenticationMiddleware(BaseMiddleware):
                 logger.info(user)
                 await event.answer(lang["logged_out"][user["locale"]])
                 await event.answer(
-                    lang["enter_phone_number"][user["locale"]],
+                    lang["enter_password"][user["locale"]],
                     reply_markup=share_contact_markup(user["locale"]),
                 )
-                await state.set_state(LoginState.phone_number)
+                await state.set_state(LoginState.password)
 
             return

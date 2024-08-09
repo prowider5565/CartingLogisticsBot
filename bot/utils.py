@@ -39,7 +39,11 @@ def get_user(user_id: int) -> dict:
 
     response = requests.get(url, headers=headers)
 
-    if response.status_code == 200 and response.json().get("data"):
+    if (
+        response.status_code == 200
+        and response.json().get("data")
+        and credentials["status"] != "LOGGED_OUT"
+    ):
         credentials["status"] = "OK"
     else:
         credentials["status"] = "LOGGED_OUT"

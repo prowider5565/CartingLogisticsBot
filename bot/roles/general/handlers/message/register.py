@@ -32,10 +32,12 @@ async def set_language(message: types.Message, state: FSMContext):
 )
 async def phone_number_handler(message: types.Message, state: FSMContext):
     phone_number = get_phone_number(message)
+    phone_number = phone_number[1:]
     if phone_number is None:
         await message.answer(lang["invalid_phone_number"][await locale(state)])
         await state.set_state(Registration.phone_number)
         return
+    l.info("Phone number >>>>>>>>>>>>>>>>>>>>> " + phone_number)
     request_otp = requests.get(
         f"{settings.DOMAIN}/v1/check_phone?username={phone_number}"
     )
@@ -49,7 +51,7 @@ async def phone_number_handler(message: types.Message, state: FSMContext):
         request_otp.json()["data"]["sms_code"],
         request_otp.json()["data"]["sms_insert"]["id"],
     )
-    await state.update_data(phone_number=phone_number[1:], sms_id=sms_id)
+    await state.update_data(phone_number=phone_number, sms_id=sms_id)
     await message.answer(
         lang["enter_your_otp_code"][await locale(state)] + str(otp_code)
     )
@@ -88,7 +90,7 @@ async def password_handler(message: types.Message, state: FSMContext):
         "password": data["password"],
         "id": data["sms_id"],
         "role": ["b25be651-93f7-4415-9b6d-d58b7a752218"],
-        "role_id": "b25be651-93f7-4415-9b6d-d58b7a752218"
+        "role_id": "b25be651-93f7-4415-9b6d-d58b7a752218",
     }
     l.info(context)
     response = requests.post(f"{settings.DOMAIN}/v1/register_user", json=context)
