@@ -34,7 +34,7 @@ def get_user(user_id: int) -> dict:
         credentials["status"] = "LOGGED_OUT"
         return credentials
 
-    url = f"{settings.DOMAIN}/accounts/profile"
+    url = f"{settings.DOMAIN}/v1/accounts/profile"
     headers = {"Authorization": f"Bearer {token}"}
 
     response = requests.get(url, headers=headers)
@@ -45,3 +45,18 @@ def get_user(user_id: int) -> dict:
         credentials["status"] = "LOGGED_OUT"
 
     return credentials
+
+
+def get_phone_number(message):
+
+    if message.content_type == "text":
+        phone_number = message.text
+    else:
+        phone_number = message.contact.phone_number
+    if not (
+        phone_number.startswith("+998")
+        and phone_number[1:].isdigit()
+        and len(phone_number) in range(8, 15)
+    ):
+        return None
+    return phone_number

@@ -2,13 +2,12 @@ from aiogram.fsm.context import FSMContext
 from aiogram import Router, types, F
 import requests
 
+from bot.utils import locale, logger as l, silent_delete_message, get_phone_number
 from bot.roles.general.keyboards.reply.contact import share_contact_markup
 from bot.roles.general.keyboards.inline.user_menu import user_menu_markup
 from bot.roles.general.generators.get_scheme import get_context
 from bot.roles.general.states.auth_state import Registration
 from bot.nosql.config import users_collection
-from bot.utils import silent_delete_message
-from bot.utils import locale, logger as l
 from bot.languages.general import lang
 from bot.settings import settings
 
@@ -32,19 +31,11 @@ async def set_language(message: types.Message, state: FSMContext):
     Registration.phone_number, F.content_type.in_({"contact", "text"})
 )
 async def phone_number_handler(message: types.Message, state: FSMContext):
-    if message.content_type == "text":
-        phone_number = message.text
-    else:
-        phone_number = message.contact.phone_number
-    if not (
-        phone_number.startswith("+998")
-        and phone_number[1:].isdigit()
-        and len(phone_number) in range(8, 15)
-    ):
+    phone_number = get_phone_number(message)
+    if phone_number is None:
         await message.answer(lang["invalid_phone_number"][await locale(state)])
         await state.set_state(Registration.phone_number)
         return
-
     request_otp = requests.get(f"{settings.DOMAIN}/check_phone?username={phone_number}")
     if request_otp.json()["data"]["check_phone"]:
         return await message.answer(
@@ -69,7 +60,7 @@ async def otp_handler(message: types.Message, state: FSMContext):
         await state.set_state(Registration.otp)
         return
     response = requests.put(
-        f"{settings.DOMAIN}/confirmed_sms?id={data['sms_id']}&sms_code={int(message.text)}"
+        f"{settings.DOMAIN}/v1/confirmed_sms?id={data['sms_id']}&sms_code={int(message.text)}"
     )
     l.info(response.json())
     context = response.json()
@@ -89,7 +80,7 @@ async def password_handler(message: types.Message, state: FSMContext):
     await silent_delete_message(message)
     data = await state.get_data()
     response = requests.post(
-        f"{settings.DOMAIN}/register_user",
+        f"{settings.DOMAIN}/v1/register_user",
         data={
             "username": data["phone_number"],
             "password": data["password"],

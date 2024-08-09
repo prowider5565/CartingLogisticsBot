@@ -3,6 +3,7 @@ import logging
 
 from bot.roles.general.handlers.message.register import register_router
 from bot.roles.general.handlers.message.logout import logout_router
+from bot.roles.general.handlers.message.login import login_router
 from bot.roles.general.handlers.commands import command_router
 from .settings import settings
 
@@ -13,3 +14,4 @@ dp = Dispatcher()
 dp.include_router(register_router)
 dp.include_router(logout_router)
 dp.include_router(command_router)
+dp.include_router(login_router)
