@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     HOST: str
     WEB_HOST: str
     PORT: int
+    DEFAULT_ROLE_ID: str
 
     # Database credentials
     MONGO_HOST: str

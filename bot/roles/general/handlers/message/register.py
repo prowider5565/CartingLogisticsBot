@@ -36,16 +36,20 @@ async def phone_number_handler(message: types.Message, state: FSMContext):
         await message.answer(lang["invalid_phone_number"][await locale(state)])
         await state.set_state(Registration.phone_number)
         return
-    request_otp = requests.get(f"{settings.DOMAIN}/check_phone?username={phone_number}")
-    if request_otp.json()["data"]["check_phone"]:
-        return await message.answer(
-            lang["phone_number_already_exists"][await locale(state)]
-        )
+    request_otp = requests.get(
+        f"{settings.DOMAIN}/v1/check_phone?username={phone_number}"
+    )
+    if request_otp.json():
+        l.info(request_otp.json())
+        if request_otp.json()["data"]["check_phone"]:
+            return await message.answer(
+                lang["phone_number_already_exists"][await locale(state)]
+            )
     otp_code, sms_id = (
         request_otp.json()["data"]["sms_code"],
         request_otp.json()["data"]["sms_insert"]["id"],
     )
-    await state.update_data(phone_number=phone_number, sms_id=sms_id)
+    await state.update_data(phone_number=phone_number[1:], sms_id=sms_id)
     await message.answer(
         lang["enter_your_otp_code"][await locale(state)] + str(otp_code)
     )
@@ -79,18 +83,20 @@ async def password_handler(message: types.Message, state: FSMContext):
     current_locale = await locale(state)
     await silent_delete_message(message)
     data = await state.get_data()
-    response = requests.post(
-        f"{settings.DOMAIN}/v1/register_user",
-        data={
-            "username": data["phone_number"],
-            "password": data["password"],
-            "id": data["sms_id"],
-        },
-    )
+    context = {
+        "username": data["phone_number"],
+        "password": data["password"],
+        "id": data["sms_id"],
+        "role": ["b25be651-93f7-4415-9b6d-d58b7a752218"],
+        "role_id": "b25be651-93f7-4415-9b6d-d58b7a752218"
+    }
+    l.info(context)
+    response = requests.post(f"{settings.DOMAIN}/v1/register_user", json=context)
     await message.answer(
         lang["Registration_succeeded"][current_locale],
         reply_markup=user_menu_markup(current_locale),
     )
+    l.info(list(users_collection.find({})))
     l.info("User credentials are saved to daabase successfully...")
     l.info(response.json())
     users_collection.insert_one(

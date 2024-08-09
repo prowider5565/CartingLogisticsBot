@@ -5,7 +5,7 @@ from bot.languages.general import lang
 
 
 user_menu_markup = lambda language: InlineKeyboardMarkup(
-    keyboard=[
+    inline_keyboard=[
         [InlineKeyboardButton(text=lang["logout"][language], callback_data="logout")]
     ],
 )

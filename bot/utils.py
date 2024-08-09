@@ -34,7 +34,7 @@ def get_user(user_id: int) -> dict:
         credentials["status"] = "LOGGED_OUT"
         return credentials
 
-    url = f"{settings.DOMAIN}/v1/accounts/profile"
+    url = f"{settings.DOMAIN}/accounts/profile"
     headers = {"Authorization": f"Bearer {token}"}
 
     response = requests.get(url, headers=headers)

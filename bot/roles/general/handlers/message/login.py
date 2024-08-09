@@ -16,12 +16,14 @@ async def phone_number_handler(message: types.Message, state: FSMContext):
     user = get_user(message.from_user.id)
     phone_number = get_phone_number(message)
     if phone_number is None:
-        await message.answer(lang["invalid_phone_number"][user["locale"]])
+        # await message.answer(lang["invalid_phone_number"][user["locale"]])
+        await message.answer("Invalid phone number")
         await state.set_state(LoginState.phone_number)
         return
     phone_number = phone_number[1:]
     await state.update_data(phone_number=phone_number)
-    await message.answer(lang["enter_password"][user["locale"]])
+    # await message.answer(lang["enter_password"][user["locale"]])
+    await message.answer("Enter password")
     await state.set_state(LoginState.password)
 
 
