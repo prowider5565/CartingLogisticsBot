@@ -9,9 +9,9 @@ from bot.settings import settings
 logger = logging.getLogger(__name__)
 
 
-async def locale(state):
-    data = await state.get_data()
-    return data["lang"]
+# async def locale(state):
+#     data = await state.get_data()
+#     return data["lang"]
 
 
 async def silent_delete_message(message):
@@ -66,3 +66,19 @@ def get_phone_number(message):
     ):
         return None
     return phone_number
+
+
+def locale(message):
+    user = get_user(message.from_user.id)
+    if user["status"] == "OK":
+        return user["locale"]
+    else:
+        return message.from_user.language_code
+
+
+def query_locale(message):
+    user = get_user(message.chat.id)
+    if user["status"] == "OK":
+        return user["locale"]
+    else:
+        return message.from_user.language_code

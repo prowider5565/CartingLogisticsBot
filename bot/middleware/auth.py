@@ -8,7 +8,7 @@ from bot.roles.general.keyboards.reply.lang import language_keyboards
 from bot.roles.general.states.auth_state import Registration
 from bot.roles.general.states.login_state import LoginState
 from bot.languages.general import lang
-from bot.utils import get_user
+from bot.utils import get_user, locale
 
 
 logger = logging.getLogger(__name__)
@@ -32,10 +32,10 @@ class AuthenticationMiddleware(BaseMiddleware):
             elif user["status"] == "LOGGED_OUT":
                 # User is logged out, ask for phone number to log in
                 logger.info(user)
-                await event.answer(lang["logged_out"][user["locale"]])
+                await event.answer(lang["logged_out"][locale(event)])
                 await event.answer(
-                    lang["enter_password"][user["locale"]],
-                    reply_markup=share_contact_markup(user["locale"]),
+                    lang["enter_password"][locale(event)],
+                    reply_markup=share_contact_markup(locale(event)),
                 )
                 await state.set_state(LoginState.password)
 

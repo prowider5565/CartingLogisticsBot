@@ -85,4 +85,9 @@ lang = {
         "en": "Failed to register! Invalid phone number or password!",
         "ru": "Не удалось зарегистрироваться! Неверный номер телефона или пароль!",
     },
+    "invalid_language": {
+        "uz": "Yaroqsiz til tanlandi! Iltimos, yaroqli tilni tanlang",
+        "en": "Invalid language was selected! Please, choose valid a language",
+        "ru": "Неверный язык выбран! Пожалуйста, выберите правильный язык",
+    },
 }
