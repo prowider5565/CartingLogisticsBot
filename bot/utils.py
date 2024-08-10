@@ -31,6 +31,7 @@ def get_user(user_id: int) -> dict:
     token = credentials.get("token", {}).get("access_token")
 
     if not token:
+        logger.info("THERE IS NO TOKEN +=====================================")
         credentials["status"] = "LOGGED_OUT"
         return credentials
 

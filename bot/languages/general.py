@@ -70,4 +70,9 @@ lang = {
         "ru": "Вы вышли из системы!",
     },
     "logout": {"uz": "Chiqish", "en": "Logout", "ru": "Выйти"},
+    "wrong_password": {
+        "uz": "Parol noto'g'ri!",
+        "en": "Wrong password!",
+        "ru": "Неверный пароль!",
+    },
 }

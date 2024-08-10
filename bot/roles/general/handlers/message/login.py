@@ -4,6 +4,7 @@ import requests
 
 from bot.utils import get_user, silent_delete_message, logger as l, get_phone_number
 from bot.roles.general.states.login_state import LoginState
+from bot.nosql.config import users_collection
 from bot.languages.general import lang
 from bot.settings import settings
 
@@ -36,4 +37,19 @@ async def password_handler(message: types.Message, state: FSMContext):
     response = requests.post(
         url, data={"username": user["phone_number"], "password": password}
     )
-    await message.answer(str(response.json()))
+    if response.status_code == 200:
+        await message.answer(str(response.json()))
+        users_collection.update_one(
+            {"user_id": message.from_user.id},
+            {
+                "$set": {
+                    "credentials.status": "OK",
+                    "credentials.token": response.json()["data"]["data"],
+                }
+            },
+        )
+        l.info("THE UPDATED USER &&&&&&&&&&&&&&&&&&&")
+        l.info(users_collection.find_one({"user_id": message.from_user.id}))
+    else:
+        await message.answer(lang["wrong_password"][user["locale"]])
+        await state.set_state(LoginState.password)
