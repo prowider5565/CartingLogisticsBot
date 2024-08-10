@@ -66,7 +66,7 @@ def get_context(user_id, response_data, phone_number, password, locale):
     user_credentials = {
         "user_id": user_id,
         "credentials": {
-            "token": response_data["data"]["token"]["data"],
+            "token": response_data,
             "phone_number": phone_number,
             "password": password,
             "locale": locale,

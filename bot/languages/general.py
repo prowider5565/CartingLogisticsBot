@@ -79,5 +79,10 @@ lang = {
         "uz": "Tizimga kirish uchun parolingizni kiriting!",
         "en": "Login instead! Please enter your password",
         "ru": "Войти в систему! введите свой пароль!",
-    }
+    },
+    "registration_failed": {
+        "uz": "Tizimga kirishda xatolik yuz berdi! Qayta urinib ko'ring",
+        "en": "Failed to register! Invalid phone number or password!",
+        "ru": "Не удалось зарегистрироваться! Неверный номер телефона или пароль!",
+    },
 }

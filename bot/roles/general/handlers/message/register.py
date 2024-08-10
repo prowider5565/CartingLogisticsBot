@@ -103,16 +103,19 @@ async def password_handler(message: types.Message, state: FSMContext):
         lang["Registration_succeeded"][current_locale],
         reply_markup=user_menu_markup(current_locale),
     )
-    l.info(list(users_collection.find({})))
-    l.info("User credentials are saved to daabase successfully...")
-    l.info(response.json())
-    users_collection.insert_one(
-        get_context(
-            message.from_user.id,
-            response.json(),
-            data["phone_number"],
-            data["password"],
-            current_locale,
+    if response.status_code == 200:
+        l.info(list(users_collection.find({})))
+        l.info("User credentials are saved to daabase successfully...")
+        l.info(response.json())
+        users_collection.insert_one(
+            get_context(
+                message.from_user.id,
+                response.json()["data"]["token"]["data"],
+                data["phone_number"],
+                data["password"],
+                current_locale,
+            )
         )
-    )
+    else:
+        await message.answer(lang["registration_failed"][current_locale])
     await state.clear()
