@@ -23,14 +23,3 @@ async def send_welcome(message: types.Message, state: FSMContext):
     l.info("USER:            " + str(user))
     await message.answer(greeting, reply_markup=user_menu_markup(locale(message)))
 
-
-@command_router.message(Command("flushall"))
-async def flush_all(message: types.Message, state: FSMContext):
-    users_collection.delete_one({"user_id": message.from_user.id})
-    await message.answer("All data has been deleted successfully!")
-
-
-@command_router.message(Command("manual_login"))
-async def manual_login_handler(message: types.Message, state: FSMContext):
-    await message.answer("Enter phone number")
-    await state.set_state(LoginState.phone_number)

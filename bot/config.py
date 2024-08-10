@@ -1,10 +1,15 @@
-from aiogram import Bot, Dispatcher
+from aiogram import types, Bot, Dispatcher
+from aiogram.fsm.context import FSMContext
+from aiogram.filters import Command
 import logging
 
 from bot.roles.general.handlers.message.register import register_router
 from bot.roles.general.handlers.message.logout import logout_router
 from bot.roles.general.handlers.message.login import login_router
 from bot.roles.general.handlers.commands import command_router
+from bot.roles.general.states.login_state import LoginState
+from bot.nosql.config import users_collection
+from bot.utils import logger as l
 from .settings import settings
 
 
@@ -17,3 +22,14 @@ dp.include_router(command_router)
 dp.include_router(login_router)
 
 
+@dp.message(Command("flushall"))
+async def flush_all(message: types.Message, state: FSMContext):
+    users_collection.delete_many({})
+    l.info(list(users_collection.find({})))
+    await message.answer("All data has been deleted successfully!")
+
+
+@dp.message(Command("manual_login"))
+async def manual_login_handler(message: types.Message, state: FSMContext):
+    await message.answer("Enter phone number")
+    await state.set_state(LoginState.phone_number)

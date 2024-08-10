@@ -44,7 +44,7 @@ async def password_handler(message: types.Message, state: FSMContext):
     if response.status_code == 200:
         l.info("PRINTING PASS")
         l.info(user)
-        if user:
+        if user["status"] == "LOGGED_OUT":
             users_collection.update_one(
                 {"user_id": message.from_user.id},
                 {
