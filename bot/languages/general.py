@@ -75,4 +75,9 @@ lang = {
         "en": "Wrong password!",
         "ru": "Неверный пароль!",
     },
+    "login_instead": {
+        "uz": "Tizimga kirish uchun parolingizni kiriting!",
+        "en": "Login instead! Please enter your password",
+        "ru": "Войти в систему! введите свой пароль!",
+    }
 }

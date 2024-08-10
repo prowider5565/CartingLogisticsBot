@@ -32,11 +32,14 @@ login_router = Router()
 async def password_handler(message: types.Message, state: FSMContext):
     password = message.text
     user = get_user(message.from_user.id)
+    if user["status"] != "NOT_REGISTERED":
+        phone_number = user["phone_number"]
+    else:
+        data = await state.get_data()
+        phone_number = data["phone_number"]
     await silent_delete_message(message)
     url = f"{settings.DOMAIN}/login/user"
-    response = requests.post(
-        url, data={"username": user["phone_number"], "password": password}
-    )
+    response = requests.post(url, data={"username": phone_number, "password": password})
     if response.status_code == 200:
         await message.answer(str(response.json()))
         users_collection.update_one(

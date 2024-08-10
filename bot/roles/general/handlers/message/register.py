@@ -7,6 +7,7 @@ from bot.roles.general.keyboards.reply.contact import share_contact_markup
 from bot.roles.general.keyboards.inline.user_menu import user_menu_markup
 from bot.roles.general.generators.get_scheme import get_context
 from bot.roles.general.states.auth_state import Registration
+from bot.roles.general.states.login_state import LoginState
 from bot.nosql.config import users_collection
 from bot.languages.general import lang
 from bot.settings import settings
@@ -44,9 +45,13 @@ async def phone_number_handler(message: types.Message, state: FSMContext):
     if request_otp.json():
         l.info(request_otp.json())
         if request_otp.json()["data"]["check_phone"]:
-            return await message.answer(
+            await message.answer(
                 lang["phone_number_already_exists"][await locale(state)]
             )
+            await message.answer(lang["login_instead"][await locale(state)])
+            await state.update_data(phone_number=phone_number)
+            await state.set_state(LoginState.password)
+            return
     otp_code, sms_id = (
         request_otp.json()["data"]["sms_code"],
         request_otp.json()["data"]["sms_insert"]["id"],
