@@ -24,10 +24,11 @@ async def send_welcome(message: types.Message, state: FSMContext):
     await message.answer(greeting, reply_markup=user_menu_markup(user["locale"]))
 
 
-@command_router.message(Command("/flushall"))
+@command_router.message(Command("flushall"))
 async def flush_all(message: types.Message, state: FSMContext):
-    users_collection.delete_many({})
+    users_collection.delete_one({"user_id": message.from_user.id})
     await message.answer("All data has been deleted successfully!")
+
 
 
 @command_router.message(Command("manual_login"))

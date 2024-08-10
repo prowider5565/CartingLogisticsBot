@@ -70,6 +70,7 @@ def get_context(user_id, response_data, phone_number, password, locale):
             "phone_number": phone_number,
             "password": password,
             "locale": locale,
+            "status": "OK"
         },
     }
     return user_credentials
