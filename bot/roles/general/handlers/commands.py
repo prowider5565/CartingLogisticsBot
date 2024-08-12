@@ -3,8 +3,6 @@ from aiogram.filters import Command
 from aiogram import types, Router
 
 from bot.roles.general.keyboards.inline.user_menu import get_user_menu
-from bot.roles.general.keyboards.reply.lang import language_keyboards
-from bot.roles.general.states.login_state import LoginState
 from bot.middleware.auth import AuthenticationMiddleware
 from bot.utils import get_user, logger as l, locale
 from bot.nosql.config import users_collection

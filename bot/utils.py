@@ -1,17 +1,13 @@
 from aiogram.exceptions import TelegramBadRequest
 import requests
 import logging
+import re
 
 from bot.nosql.config import users_collection
 from bot.settings import settings
 
 
 logger = logging.getLogger(__name__)
-
-
-# async def locale(state):
-#     data = await state.get_data()
-#     return data["lang"]
 
 
 async def silent_delete_message(message):
@@ -51,6 +47,11 @@ def get_user(user_id: int) -> dict:
         credentials["status"] = "LOGGED_OUT"
 
     return credentials
+
+
+def is_valid_phone_number(phone: str) -> bool:
+    pattern = re.compile(r"^\+?\d{10,15}$")
+    return pattern.match(phone) is not None
 
 
 def get_phone_number(message):

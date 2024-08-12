@@ -6,6 +6,10 @@ import logging
 from bot.roles.general.handlers.query.update_credentials import user_router
 from bot.roles.general.handlers.message.register import register_router
 from bot.roles.general.handlers.query.settings import settings_router
+from bot.roles.client.handlers.message.add_load import (
+    load_router as message_load_router,
+)
+from bot.roles.client.handlers.query.add_load import load_router as query_load_router
 from bot.roles.general.handlers.query.switch_role import role_router
 from bot.roles.general.handlers.query.logout import logout_router
 from bot.roles.general.handlers.message.login import login_router
@@ -19,6 +23,8 @@ from .settings import settings
 logging.basicConfig(level=logging.INFO)
 bot = Bot(token=settings.BOT_TOKEN)
 dp = Dispatcher()
+dp.include_router(message_load_router)
+dp.include_router(query_load_router)
 dp.include_router(register_router)
 dp.include_router(settings_router)
 dp.include_router(command_router)
