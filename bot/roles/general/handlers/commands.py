@@ -2,7 +2,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.filters import Command
 from aiogram import types, Router
 
-from bot.roles.general.keyboards.inline.user_menu import user_menu_markup
+from bot.roles.general.keyboards.inline.user_menu import get_user_menu
 from bot.roles.general.keyboards.reply.lang import language_keyboards
 from bot.roles.general.states.login_state import LoginState
 from bot.middleware.auth import AuthenticationMiddleware
@@ -23,6 +23,4 @@ async def send_welcome(message: types.Message, state: FSMContext):
     ]
     l.info(list(users_collection.find({"user_id": message.from_user.id})))
     l.info("USER:            " + str(user))
-    await message.answer(
-        greeting, reply_markup=user_menu_markup(await locale(message, state))
-    )
+    await message.answer(greeting, reply_markup=get_user_menu(user["role"]["label"]))

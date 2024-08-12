@@ -4,7 +4,7 @@ import requests
 
 from bot.utils import locale, logger as l, silent_delete_message, get_phone_number
 from bot.roles.general.keyboards.reply.contact import share_contact_markup
-from bot.roles.general.keyboards.inline.user_menu import user_menu_markup
+from bot.roles.general.keyboards.inline.user_menu import get_user_menu
 from bot.roles.general.generators.get_scheme import get_context
 from bot.roles.general.states.auth_state import Registration
 from bot.roles.general.states.login_state import LoginState
@@ -96,14 +96,14 @@ async def password_handler(message: types.Message, state: FSMContext):
         "username": data["phone_number"],
         "password": data["password"],
         "id": data["sms_id"],
-        "role": ["b25be651-93f7-4415-9b6d-d58b7a752218"],
-        "role_id": "b25be651-93f7-4415-9b6d-d58b7a752218",
+        "role": [settings.DEFAULT_ROLE_ID],
+        "role_id": settings.DEFAULT_ROLE_ID,
     }
     l.info(context)
     response = requests.post(f"{settings.DOMAIN}/v1/register_user", json=context)
     await message.answer(
         lang["Registration_succeeded"][current_locale],
-        reply_markup=user_menu_markup(current_locale),
+        reply_markup=get_user_menu("client"),
     )
     if response.status_code == 200:
         l.info(list(users_collection.find({})))

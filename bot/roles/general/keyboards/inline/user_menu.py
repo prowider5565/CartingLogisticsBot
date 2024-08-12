@@ -1,20 +1,16 @@
 from aiogram.types.inline_keyboard_button import InlineKeyboardButton
 from aiogram.types.inline_keyboard_markup import InlineKeyboardMarkup
 
-from bot.languages.general import lang
 
-
-def user_menu_markup(language):
-    switch_role_button = InlineKeyboardButton(
-        text="Switch Role", callback_data="switch_role"
-    )
-    logout_button = InlineKeyboardButton(
-        text=lang["logout"][language], callback_data="logout"
-    )
-    full_name = InlineKeyboardButton(
-        text="Update Fullname", callback_data="update_fullname"
-    )
-    markup = InlineKeyboardMarkup(
-        inline_keyboard=[[switch_role_button, logout_button, full_name]]
-    )
-    return markup
+def get_user_menu(role):
+    markup = [InlineKeyboardButton(text="Settings", callback_data="settings")]
+    match role:
+        case "driver":
+            pass
+        case "client":
+            add_load = InlineKeyboardButton(text="Add load", callback_data="add_load")
+            markup.append(add_load)
+        case "dispatcher":
+            pass
+    inline_markup = InlineKeyboardMarkup(inline_keyboard=[markup])
+    return inline_markup
