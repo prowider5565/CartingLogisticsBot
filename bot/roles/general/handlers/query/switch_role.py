@@ -2,6 +2,7 @@ from aiogram import Router, types
 import requests
 
 from bot.roles.general.keyboards.inline.roles import role_markup
+from bot.nosql.config import users_collection
 from bot.utils import get_user, logger as l
 from bot.settings import settings
 
@@ -31,4 +32,11 @@ async def process_switch_role_handler(query: types.CallbackQuery):
     headers = {"Authorization": f"Bearer {user['token']['access_token']}"}
     l.info("Data: " + str(data))
     request = requests.post(url=url, json=data, headers=headers)
+    users_collection.update_one(
+        {"user_id": query.message.chat.id},
+        {"$set": {"credentials.role": {"label": role, "id": roles[role]}}},
+    )
+    l.info(
+        "Result: " + str(users_collection.find_one({"user_id": query.message.chat.id}))
+    )
     await query.message.answer(str(request.json()))

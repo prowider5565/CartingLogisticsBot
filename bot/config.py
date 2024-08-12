@@ -3,6 +3,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.filters import Command
 import logging
 
+from bot.roles.general.handlers.query.update_credentials import user_router
 from bot.roles.general.handlers.message.register import register_router
 from bot.roles.general.handlers.query.switch_role import role_router
 from bot.roles.general.handlers.query.logout import logout_router
@@ -21,6 +22,7 @@ dp.include_router(register_router)
 dp.include_router(command_router)
 dp.include_router(logout_router)
 dp.include_router(login_router)
+dp.include_router(user_router)
 dp.include_router(role_router)
 
 

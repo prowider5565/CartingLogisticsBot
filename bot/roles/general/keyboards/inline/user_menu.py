@@ -11,5 +11,10 @@ def user_menu_markup(language):
     logout_button = InlineKeyboardButton(
         text=lang["logout"][language], callback_data="logout"
     )
-    markup = InlineKeyboardMarkup(inline_keyboard=[[switch_role_button, logout_button]])
+    full_name = InlineKeyboardButton(
+        text="Update Fullname", callback_data="update_fullname"
+    )
+    markup = InlineKeyboardMarkup(
+        inline_keyboard=[[switch_role_button, logout_button, full_name]]
+    )
     return markup
