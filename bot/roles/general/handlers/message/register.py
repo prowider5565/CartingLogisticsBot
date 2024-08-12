@@ -19,7 +19,7 @@ register_router = Router()
 @register_router.message(Registration.lang)
 async def set_language(message: types.Message, state: FSMContext):
     language = {"🇺🇿 O'zbekcha": "uz", "🇷🇺 Русский": "ru", "🇬🇧 English": "en"}
-    current_lang = locale(message)
+    current_lang = await locale(message, state)
     if message.text not in language.keys():
         await message.answer(lang["invalid_language"][current_lang])
         await state.set_state(Registration.lang)
@@ -38,7 +38,7 @@ async def set_language(message: types.Message, state: FSMContext):
 async def phone_number_handler(message: types.Message, state: FSMContext):
     phone_number = get_phone_number(message)
     phone_number = phone_number[1:]
-    current_locale = locale(message)
+    current_locale = await locale(message, state)
     if phone_number is None:
         await message.answer(lang["invalid_phone_number"][current_locale])
         await state.set_state(Registration.phone_number)
@@ -67,7 +67,7 @@ async def phone_number_handler(message: types.Message, state: FSMContext):
 @register_router.message(Registration.otp)
 async def otp_handler(message: types.Message, state: FSMContext):
     data = await state.get_data()
-    current_locale = locale(message)
+    current_locale = await locale(message, state)
     if not message.text.isdigit() and len(message.text) != 4:
         await message.answer(lang["invalid_otp_code"][current_locale])
         await state.set_state(Registration.otp)
@@ -89,7 +89,7 @@ async def otp_handler(message: types.Message, state: FSMContext):
 @register_router.message(Registration.password)
 async def password_handler(message: types.Message, state: FSMContext):
     await state.update_data(password=message.text)
-    current_locale = locale(message)
+    current_locale = await locale(message, state)
     await silent_delete_message(message)
     data = await state.get_data()
     context = {

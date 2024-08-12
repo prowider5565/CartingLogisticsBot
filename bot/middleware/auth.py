@@ -32,10 +32,10 @@ class AuthenticationMiddleware(BaseMiddleware):
             elif user["status"] == "LOGGED_OUT":
                 # User is logged out, ask for phone number to log in
                 logger.info(user)
-                await event.answer(lang["logged_out"][locale(event)])
+                await event.answer(lang["logged_out"][await locale(event, state)])
                 await event.answer(
-                    lang["enter_password"][locale(event)],
-                    reply_markup=share_contact_markup(locale(event)),
+                    lang["enter_password"][await locale(event, state)],
+                    reply_markup=share_contact_markup(await locale(event, state)),
                 )
                 await state.set_state(LoginState.password)
 

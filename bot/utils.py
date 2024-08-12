@@ -68,12 +68,19 @@ def get_phone_number(message):
     return phone_number
 
 
-def locale(message):
+async def locale(message, state=None):
     user = get_user(message.from_user.id)
     if user["status"] == "OK":
         return user["locale"]
     else:
-        return message.from_user.language_code
+        default = message.from_user.language_code
+        data = await state.get_data()
+        state_lang = data.get("locale", None)
+        if state is None:
+            return default
+        if state_lang is None:
+            return default
+        return state_lang
 
 
 def query_locale(message):

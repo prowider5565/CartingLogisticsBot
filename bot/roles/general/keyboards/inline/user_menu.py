@@ -4,8 +4,12 @@ from aiogram.types.inline_keyboard_markup import InlineKeyboardMarkup
 from bot.languages.general import lang
 
 
-user_menu_markup = lambda language: InlineKeyboardMarkup(
-    inline_keyboard=[
-        [InlineKeyboardButton(text=lang["logout"][language], callback_data="logout")]
-    ],
-)
+def user_menu_markup(language):
+    switch_role_button = InlineKeyboardButton(
+        text="Switch Role", callback_data="switch_role"
+    )
+    logout_button = InlineKeyboardButton(
+        text=lang["logout"][language], callback_data="logout"
+    )
+    markup = InlineKeyboardMarkup(inline_keyboard=[[switch_role_button, logout_button]])
+    return markup

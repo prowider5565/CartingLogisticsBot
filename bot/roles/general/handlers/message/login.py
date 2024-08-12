@@ -65,10 +65,10 @@ async def password_handler(message: types.Message, state: FSMContext):
                     response.json()["data"]["data"],
                     phone_number,
                     password,
-                    locale(message),
+                    await locale(message, state),
                 )
             )
         await message.answer(str(response.json()))
     else:
-        await message.answer(lang["wrong_password"][locale(message)])
+        await message.answer(lang["wrong_password"][await locale(message, state)])
         await state.set_state(LoginState.password)

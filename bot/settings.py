@@ -16,6 +16,11 @@ class Settings(BaseSettings):
     MONGO_NAME: str
     MONGO_TZ_AWARE: bool
 
+    # Role credentials
+    DRIVER: str
+    CLIENT: str
+    DISPATCHER: str
+
     class Config:
         env_file = ".env"
 
