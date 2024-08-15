@@ -1,9 +1,13 @@
 from aiogram.types.inline_keyboard_markup import InlineKeyboardMarkup
 from aiogram.types.inline_keyboard_button import InlineKeyboardButton
 
+from bot.languages.keyboards import lang
 
-driver = InlineKeyboardButton(text="Driver", callback_data="driver")
-dispatcher = InlineKeyboardButton(text="Dispatcher", callback_data="dispatcher")
-client = InlineKeyboardButton(text="Client", callback_data="client")
 
-role_markup = InlineKeyboardMarkup(inline_keyboard=[[driver, dispatcher, client]])
+def get_role_markup(language):
+    role = lang["roles"][language]
+    driver = InlineKeyboardButton(text=role[1], callback_data="driver")
+    dispatcher = InlineKeyboardButton(text=role[-1], callback_data="dispatcher")
+    client = InlineKeyboardButton(text=role[0], callback_data="client")
+
+    return InlineKeyboardMarkup(inline_keyboard=[[driver, dispatcher, client]])

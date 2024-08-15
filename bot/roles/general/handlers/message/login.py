@@ -13,22 +13,6 @@ from bot.settings import settings
 login_router = Router()
 
 
-# @login_router.message(LoginState.phone_number)
-# async def phone_number_handler(message: types.Message, state: FSMContext):
-#     user = get_user(message.from_user.id)
-#     phone_number = get_phone_number(message)
-#     if phone_number is None:
-#         # await message.answer(lang["invalid_phone_number"][user["locale"]])
-#         await message.answer("Invalid phone number")
-#         await state.set_state(LoginState.phone_number)
-#         return
-#     phone_number = phone_number[1:]
-#     await state.update_data(phone_number=phone_number)
-#     # await message.answer(lang["enter_password"][user["locale"]])
-#     await message.answer("Enter password")
-#     await state.set_state(LoginState.password)
-
-
 @login_router.message(LoginState.password)
 async def password_handler(message: types.Message, state: FSMContext):
     password = message.text
@@ -42,8 +26,6 @@ async def password_handler(message: types.Message, state: FSMContext):
     url = f"{settings.DOMAIN}/login/user"
     response = requests.post(url, data={"username": phone_number, "password": password})
     if response.status_code == 200:
-        l.info("PRINTING PASS")
-        l.info(user)
         if user["status"] == "LOGGED_OUT":
             users_collection.update_one(
                 {"user_id": message.from_user.id},
@@ -54,11 +36,7 @@ async def password_handler(message: types.Message, state: FSMContext):
                     }
                 },
             )
-            l.info("THE UPDATED USER &&&&&&&&&&&&&&&&&&&")
-            l.info(users_collection.find_one({"user_id": message.from_user.id}))
         else:
-            l.info("QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ")
-            l.info(response.json())
             users_collection.insert_one(
                 get_context(
                     message.from_user.id,
@@ -66,6 +44,7 @@ async def password_handler(message: types.Message, state: FSMContext):
                     phone_number,
                     password,
                     await locale(message, state),
+                    message.from_user.full_name,
                 )
             )
         await message.answer(str(response.json()))

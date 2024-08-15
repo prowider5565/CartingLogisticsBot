@@ -3,8 +3,9 @@ from aiogram import Router, types, F
 from aiogram.types import Message
 import requests
 
-from bot.roles.client.keyboards.reply.location import share_location_markup
+from bot.roles.client.keyboards.reply.location import get_share_location_markup
 from bot.roles.client.keyboards.reply.load_type import get_type_markup
+from bot.roles.general.keyboards.inline.user_menu import get_user_menu
 from bot.utils import is_valid_phone_number, get_user, isfloat
 from bot.roles.client.states.load import LoadState
 from bot.languages.client import lang
@@ -96,25 +97,27 @@ async def price_handler(message: Message, state: FSMContext):
 
 @load_router.message(LoadState.phone_number)
 async def phone_number_handler(message: Message, state: FSMContext):
+    user = get_user(message.from_user.id)
     if not is_valid_phone_number(message.text):
         await message.answer(translate("invalid_phone_number", message.from_user.id))
         return
     await state.update_data(phone_number=message.text)
     await message.answer(
         translate("share_pickup_location", message.from_user.id),
-        reply_markup=share_location_markup,
+        reply_markup=get_share_location_markup(user["locale"]),
     )
     await state.set_state(LoadState.pickup_latlong)
 
 
 @load_router.message(LoadState.pickup_latlong, F.location)
 async def pickup_latlong_handler(message: types.Message, state: FSMContext):
+    user = get_user(message.from_user.id)
     await state.update_data(
         pickup_latlong=(message.location.latitude, message.location.longitude)
     )
     await message.answer(
         translate("share_delivery_location", message.from_user.id),
-        reply_markup=share_location_markup,
+        reply_markup=get_share_location_markup(user["locale"]),
     )
     await state.set_state(LoadState.delivery_latlong)
 
@@ -218,10 +221,9 @@ async def receiver_fullname_handler(message: Message, state: FSMContext):
     headers = {"Authorization": f"Bearer {user['token']['access_token']}"}
     request = requests.post(url, json=user_data, headers=headers)
     if request.status_code == 200:
-        await message.answer(str(request.json()) + str(request.status_code))
-        await message.answer(str(user_data))
         await message.answer(
-            lang["load_successfully_created"](user_data)[user["locale"]]
+            lang["load_successfully_created"](user_data)[user["locale"]],
+            reply_markup=get_user_menu(user["role"]["label"], user["locale"]),
         )
     else:
         await message.answer(

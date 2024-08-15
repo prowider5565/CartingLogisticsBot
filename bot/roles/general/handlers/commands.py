@@ -21,4 +21,6 @@ async def send_welcome(message: types.Message, state: FSMContext):
     ]
     l.info(list(users_collection.find({"user_id": message.from_user.id})))
     l.info("USER:            " + str(user))
-    await message.answer(greeting, reply_markup=get_user_menu(user["role"]["label"]))
+    await message.answer(
+        greeting, reply_markup=get_user_menu(user["role"]["label"], user["locale"])
+    )

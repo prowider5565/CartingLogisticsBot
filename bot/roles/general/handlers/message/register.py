@@ -11,6 +11,7 @@ from bot.roles.general.states.login_state import LoginState
 from bot.nosql.config import users_collection
 from bot.languages.general import lang
 from bot.settings import settings
+from bot.constants import LANGUAGE
 
 
 register_router = Router()
@@ -18,13 +19,13 @@ register_router = Router()
 
 @register_router.message(Registration.lang)
 async def set_language(message: types.Message, state: FSMContext):
-    language = {"🇺🇿 O'zbekcha": "uz", "🇷🇺 Русский": "ru", "🇬🇧 English": "en"}
+    
     current_lang = await locale(message, state)
-    if message.text not in language.keys():
+    if message.text not in LANGUAGE.keys():
         await message.answer(lang["invalid_language"][current_lang])
         await state.set_state(Registration.lang)
         return
-    await state.update_data(lang=language[message.text])
+    await state.update_data(lang=LANGUAGE[message.text])
     await message.answer(
         lang["enter_phone_number"][current_lang],
         reply_markup=share_contact_markup(current_lang),
@@ -103,7 +104,7 @@ async def password_handler(message: types.Message, state: FSMContext):
     response = requests.post(f"{settings.DOMAIN}/v1/register_user", json=context)
     await message.answer(
         lang["Registration_succeeded"][current_locale],
-        reply_markup=get_user_menu("client"),
+        reply_markup=get_user_menu("client", data["lang"]),
     )
     if response.status_code == 200:
         l.info(list(users_collection.find({})))
@@ -116,6 +117,7 @@ async def password_handler(message: types.Message, state: FSMContext):
                 data["phone_number"],
                 data["password"],
                 current_locale,
+                message.from_user.full_name,
             )
         )
     else:

@@ -1,10 +1,11 @@
 from aiogram import Router, types
 import requests
 
-from bot.roles.general.keyboards.inline.roles import role_markup
+from bot.roles.general.keyboards.inline.roles import get_role_markup
 from bot.nosql.config import users_collection
-from bot.utils import get_user, logger as l
+from bot.languages.general import lang
 from bot.settings import settings
+from bot.utils import get_user
 
 
 role_router = Router()
@@ -12,7 +13,11 @@ role_router = Router()
 
 @role_router.callback_query(lambda query: query.data == "switch_role")
 async def switch_role_handler(query: types.CallbackQuery):
-    await query.message.answer("Select your role!", reply_markup=role_markup)
+    user = get_user(query.message.chat.id)
+    await query.message.answer(
+        lang["select_your_role"][user["locale"]],
+        reply_markup=get_role_markup(user["locale"]),
+    )
 
 
 @role_router.callback_query(
@@ -30,13 +35,9 @@ async def process_switch_role_handler(query: types.CallbackQuery):
     username = user["phone_number"]
     data = {"roles": [roles[role]], "username": username}
     headers = {"Authorization": f"Bearer {user['token']['access_token']}"}
-    l.info("Data: " + str(data))
     request = requests.post(url=url, json=data, headers=headers)
     users_collection.update_one(
         {"user_id": query.message.chat.id},
         {"$set": {"credentials.role": {"label": role, "id": roles[role]}}},
-    )
-    l.info(
-        "Result: " + str(users_collection.find_one({"user_id": query.message.chat.id}))
     )
     await query.message.answer(str(request.json()))

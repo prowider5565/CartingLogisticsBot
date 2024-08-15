@@ -1,4 +1,9 @@
 lang = {
+    "choose_language": {
+        "uz": "Tilingizni tanlang",
+        "en": "Choose your language",
+        "ru": "Выберите ваш язык",
+    },
     "lang_set_successfully": {
         "uz": "Tilingiz muvaffaqiyatli sozlandi!",
         "en": "Your language was set successfully!",
@@ -89,5 +94,15 @@ lang = {
         "uz": "Yaroqsiz til tanlandi! Iltimos, yaroqli tilni tanlang",
         "en": "Invalid language was selected! Please, choose valid a language",
         "ru": "Неверный язык выбран! Пожалуйста, выберите правильный язык",
+    },
+    "select_your_role": {
+        "uz": "Iltimos, rolingizni tanlang:",
+        "en": "Please, select your role:",
+        "ru": "Пожалуйста, выберите свою роль:",
+    },
+    "select_action": {
+        "uz": "Iltimos, amalni tanlang:",
+        "en": "Please, select what you want to do:",
+        "ru": "Пожалуйста, выберите действие:",
     },
 }

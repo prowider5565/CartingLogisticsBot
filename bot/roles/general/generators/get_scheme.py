@@ -1,7 +1,7 @@
 from bot.settings import settings
 
 
-def get_context(user_id, response_data, phone_number, password, locale):
+def get_context(user_id, response_data, phone_number, password, locale, full_name):
     """
     This function constructs a user credentials dictionary based on the provided parameters.
 
@@ -33,6 +33,7 @@ def get_context(user_id, response_data, phone_number, password, locale):
             "password": password,
             "locale": locale,
             "status": "OK",
+            "full_name": full_name,
             "role": {"id": settings.DEFAULT_ROLE_ID, "label": "client"},
         },
     }
