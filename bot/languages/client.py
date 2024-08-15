@@ -124,4 +124,68 @@ lang = {
         "ru": "Пожалуйста, введите полное имя получателя:",
         "en": "Please enter the receiver's full name:",
     },
+    "load_successfully_created": lambda data: {
+        "en": (
+            f"✅ Load successfully created!\n\n"
+            f"📦 Name: {data['name']}\n"
+            f"⚖️ Weight: {data['weight']} kg\n"
+            f"📏 Dimensions: {data['width']}x{data['length']}x{data['height']} cm\n"
+            f"🛠️ Type: {data['type']}\n"
+            f"💰 Price: ${data['price']}\n"
+            f"📞 Phone Number: {data['phone_number']}\n"
+            f"📍 Pickup Location: {data['pickup_latlong']}\n"
+            f"📍 Delivery Location: {data['delivery_latlong']}\n"
+            f"🗓️ Pickup Date: {data['pickup_date']}\n"
+            f"🗓️ Delivery Date: {data['delivery_date']}\n"
+            f"🏙️ Send Region: {data['send_region']}, {data['send_district']}\n"
+            f"🏙️ Receive Region: {data['receive_region']}, {data['receive_district']}\n"
+            f"📞 Client Phone: {data['client_phone']}\n"
+            f"👤 Client Full Name: {data['client_fullname']}\n"
+            f"📞 Receiver Phone: {data['receiver_phone']}\n"
+            f"👤 Receiver Full Name: {data['receiver_fullname']}"
+        ),
+        "uz": (
+            f"✅ Yukingiz muvaffaqiyatli yaratildi!\n\n"
+            f"📦 Nomi: {data['name']}\n"
+            f"⚖️ Og'irligi: {data['weight']} kg\n"
+            f"📏 O'lchamlari: {data['width']}x{data['length']}x{data['height']} sm\n"
+            f"🛠️ Turi: {data['type']}\n"
+            f"💰 Narxi: ${data['price']}\n"
+            f"📞 Telefon Raqami: {data['phone_number']}\n"
+            f"📍 Jo'natish joyi: {data['pickup_latlong']}\n"
+            f"📍 Yetkazib berish joyi: {data['delivery_latlong']}\n"
+            f"🗓️ Jo'natish sanasi: {data['pickup_date']}\n"
+            f"🗓️ Yetkazib berish sanasi: {data['delivery_date']}\n"
+            f"🏙️ Jo'natish viloyati: {data['send_region']}, {data['send_district']}\n"
+            f"🏙️ Qabul qilish viloyati: {data['receive_region']}, {data['receive_district']}\n"
+            f"📞 Mijoz Telefon Raqami: {data['client_phone']}\n"
+            f"👤 Mijoz To'liq Ismi: {data['client_fullname']}\n"
+            f"📞 Qabul qiluvchi Telefon Raqami: {data['receiver_phone']}\n"
+            f"👤 Qabul qiluvchi To'liq Ismi: {data['receiver_fullname']}"
+        ),
+        "ru": (
+            f"✅ Ваш груз успешно создан!\n\n"
+            f"📦 Наименование: {data['name']}\n"
+            f"⚖️ Вес: {data['weight']} кг\n"
+            f"📏 Размеры: {data['width']}x{data['length']}x{data['height']} см\n"
+            f"🛠️ Тип: {data['type']}\n"
+            f"💰 Цена: ${data['price']}\n"
+            f"📞 Номер телефона: {data['phone_number']}\n"
+            f"📍 Место отправления: {data['pickup_latlong']}\n"
+            f"📍 Место доставки: {data['delivery_latlong']}\n"
+            f"🗓️ Дата отправления: {data['pickup_date']}\n"
+            f"🗓️ Дата доставки: {data['delivery_date']}\n"
+            f"🏙️ Регион отправления: {data['send_region']}, {data['send_district']}\n"
+            f"🏙️ Регион получения: {data['receive_region']}, {data['receive_district']}\n"
+            f"📞 Телефон клиента: {data['client_phone']}\n"
+            f"👤 Полное имя клиента: {data['client_fullname']}\n"
+            f"📞 Телефон получателя: {data['receiver_phone']}\n"
+            f"👤 Полное имя получателя: {data['receiver_fullname']}"
+        ),
+    },
+    "error_in_creating_load": lambda error: {
+        "en": f"An error occurred while creating the load: {error}",
+        "uz": f"Yuk yaratishda xatolik: {error}",
+        "ru": f"Произошла ошибка при создании груза: {error}",
+    },
 }

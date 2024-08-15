@@ -217,6 +217,14 @@ async def receiver_fullname_handler(message: Message, state: FSMContext):
     user = get_user(message.from_user.id)
     headers = {"Authorization": f"Bearer {user['token']['access_token']}"}
     request = requests.post(url, json=user_data, headers=headers)
-    await message.answer(str(request.json()) + str(request.status_code))
-    await message.answer(str(user_data))
+    if request.status_code == 200:
+        await message.answer(str(request.json()) + str(request.status_code))
+        await message.answer(str(user_data))
+        await message.answer(
+            lang["load_successfully_created"](user_data)[user["locale"]]
+        )
+    else:
+        await message.answer(
+            lang["error_in_creating_load"](request.json()["message"])[user["locale"]]
+        )
     await state.clear()
