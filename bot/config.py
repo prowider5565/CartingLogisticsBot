@@ -13,6 +13,7 @@ from bot.roles.client.handlers.query.add_load import load_router as query_load_r
 from bot.roles.general.handlers.query.switch_role import role_router
 from bot.roles.general.handlers.query.logout import logout_router
 from bot.roles.general.handlers.message.login import login_router
+from bot.roles.client.handlers.query.my_loads import loads_router
 from bot.roles.general.handlers.commands import command_router
 from bot.roles.general.states.login_state import LoginState
 from bot.nosql.config import users_collection
@@ -30,6 +31,7 @@ dp.include_router(settings_router)
 dp.include_router(command_router)
 dp.include_router(logout_router)
 dp.include_router(login_router)
+dp.include_router(loads_router)
 dp.include_router(user_router)
 dp.include_router(role_router)
 

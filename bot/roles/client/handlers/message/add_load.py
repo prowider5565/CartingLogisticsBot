@@ -4,8 +4,9 @@ from aiogram.types import Message
 import requests
 
 from bot.roles.client.keyboards.reply.location import share_location_markup
+from bot.roles.client.keyboards.reply.load_type import get_type_markup
 from bot.roles.client.generators.regions import get_regions_keyboard
-from bot.utils import is_valid_phone_number, get_user
+from bot.utils import is_valid_phone_number, get_user, isfloat
 from bot.roles.client.states.load import LoadState
 from bot.settings import settings
 
@@ -16,47 +17,57 @@ load_router = Router()
 @load_router.message(LoadState.name)
 async def name_handler(message: Message, state: FSMContext):
     await state.update_data(name=message.text)
-    await message.answer("Please enter the weight:")
+    await message.answer("Please enter the weight in kilogramms (kg):")
     await state.set_state(LoadState.weight)
 
 
 @load_router.message(LoadState.weight)
 async def weight_handler(message: Message, state: FSMContext):
     await state.update_data(weight=message.text)
-    if not message.text.isdigit():
-        await message.answer("Invalid weight. Please enter a number.")
+    if not isfloat(message.text):
+        await message.answer(
+            "Invalid weight. Please enter a number for example: 2.65, 7, 20, 32.5."
+        )
         await state.set_state(LoadState.weight)
         return
-    await message.answer("Please enter the width:")
+    await message.answer("Please enter the width in meters (m):")
     await state.set_state(LoadState.width)
 
 
 @load_router.message(LoadState.width)
 async def width_handler(message: Message, state: FSMContext):
-    if not message.text.isdigit():
-        await message.answer("Invalid width. Please enter a number.")
+    if not isfloat(message.text):
+        await message.answer(
+            "Invalid width. Please enter a number for example: 2.65, 7, 20, 32.5."
+        )
         await state.set_state(LoadState.width)
         return
     await state.update_data(width=message.text)
-    await message.answer("Please enter the length:")
+    await message.answer("Please enter the length in meters (m):")
     await state.set_state(LoadState.length)
 
 
 @load_router.message(LoadState.length)
 async def length_handler(message: Message, state: FSMContext):
     await state.update_data(length=message.text)
-    await message.answer("Please enter the height:")
+    await message.answer("Please enter the height in meters (m):")
     await state.set_state(LoadState.height)
 
 
 @load_router.message(LoadState.height)
 async def height_handler(message: Message, state: FSMContext):
-    if not message.text.isdigit():
-        await message.answer("Invalid height. Please enter a number.")
+    user = get_user(message.from_user.id)
+    lang = user["locale"]
+    if not isfloat(message.text):
+        await message.answer(
+            "Invalid height. Please enter a number for example: 2.65, 7, 20, 32.5."
+        )
         await state.set_state(LoadState.height)
         return
     await state.update_data(height=message.text)
-    await message.answer("Please enter the type:")
+    await message.answer(
+        "Please select the type of your load:", reply_markup=get_type_markup(lang)
+    )
     await state.set_state(LoadState.type)
 
 
@@ -69,12 +80,14 @@ async def type_handler(message: Message, state: FSMContext):
 
 @load_router.message(LoadState.price)
 async def price_handler(message: Message, state: FSMContext):
-    if not message.text.isdigit():
+    if not isfloat(message.text):
         await message.answer("Invalid price. Please enter a number.")
         await state.set_state(LoadState.price)
         return
     await state.update_data(price=message.text)
-    await message.answer("Please enter the phone number:")
+    await message.answer(
+        "Please enter the phone number in this order: +998 (xx) xxx-xx-xx"
+    )
     await state.set_state(LoadState.phone_number)
 
 
@@ -125,7 +138,8 @@ async def pickup_date_handler(message: Message, state: FSMContext):
 async def delivery_date_handler(message: Message, state: FSMContext):
     await state.update_data(delivery_date=message.text)
     await message.answer(
-        "Please select the sending region:", reply_markup=get_regions_keyboard()
+        "Please select the region you want to send to:",
+        reply_markup=get_regions_keyboard(),
     )
     await state.set_state(LoadState.send_region)
 
@@ -141,7 +155,8 @@ async def send_region_handler(message: Message, state: FSMContext):
 async def send_district_handler(message: Message, state: FSMContext):
     await state.update_data(send_district=message.text)
     await message.answer(
-        "Please select the receiving region:", reply_markup=get_regions_keyboard()
+        "Please select the region you are going to receive the load from:",
+        reply_markup=get_regions_keyboard(),
     )
     await state.set_state(LoadState.receive_region)
 
@@ -149,14 +164,14 @@ async def send_district_handler(message: Message, state: FSMContext):
 @load_router.message(LoadState.receive_region)
 async def receive_region_handler(message: Message, state: FSMContext):
     await state.update_data(receive_region=message.text)
-    await message.answer("Please enter the receiving district:")
+    await message.answer("Please enter the district of the region:")
     await state.set_state(LoadState.receive_district)
 
 
 @load_router.message(LoadState.receive_district)
 async def receive_district_handler(message: Message, state: FSMContext):
     await state.update_data(receive_district=message.text)
-    await message.answer("Please enter the client's phone number:")
+    await message.answer("Please enter the client's phone number: +998 (xx) xxx-xx-xx")
     await state.set_state(LoadState.client_phone)
 
 
@@ -175,7 +190,9 @@ async def client_phone_handler(message: Message, state: FSMContext):
 @load_router.message(LoadState.client_fullname)
 async def client_fullname_handler(message: Message, state: FSMContext):
     await state.update_data(client_fullname=message.text)
-    await message.answer("Please enter the receiver's phone number:")
+    await message.answer(
+        "Please enter the receiver's phone number: +998 (xx) xxx-xx-xx"
+    )
     await state.set_state(LoadState.receiver_phone)
 
 

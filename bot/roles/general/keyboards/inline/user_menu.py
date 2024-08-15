@@ -9,7 +9,9 @@ def get_user_menu(role):
             pass
         case "client":
             add_load = InlineKeyboardButton(text="Add load", callback_data="add_load")
+            my_loads = InlineKeyboardButton(text="My loads", callback_data="my_loads")
             markup.append(add_load)
+            markup.append(my_loads)
         case "dispatcher":
             pass
     inline_markup = InlineKeyboardMarkup(inline_keyboard=[markup])
