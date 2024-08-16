@@ -1,3 +1,4 @@
+ITEMS_PER_PAGE = 8
 LANGUAGE = {"🇺🇿 O'zbekcha": "uz", "🇷🇺 Русский": "ru", "🇬🇧 English": "en"}
 LOAD_TYPES = {
     "uz": ["litr", "kilogram", "dona"],

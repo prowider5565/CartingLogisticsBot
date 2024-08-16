@@ -1,7 +1,6 @@
 from aiogram.fsm.context import FSMContext
 from aiogram import BaseMiddleware
 from aiogram.types import Message
-import logging
 
 from bot.roles.general.keyboards.reply.contact import share_contact_markup
 from bot.roles.general.keyboards.reply.lang import language_keyboards
@@ -9,9 +8,6 @@ from bot.roles.general.states.auth_state import Registration
 from bot.roles.general.states.login_state import LoginState
 from bot.languages.general import lang
 from bot.utils import get_user, locale
-
-
-logger = logging.getLogger(__name__)
 
 
 class AuthenticationMiddleware(BaseMiddleware):
@@ -31,7 +27,6 @@ class AuthenticationMiddleware(BaseMiddleware):
                 await state.set_state(Registration.lang)
             elif user["status"] == "LOGGED_OUT":
                 # User is logged out, ask for phone number to log in
-                logger.info(user)
                 await event.answer(lang["logged_out"][await locale(event, state)])
                 await event.answer(
                     lang["enter_password"][await locale(event, state)],

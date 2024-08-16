@@ -1,6 +1,7 @@
 from aiogram.types.inline_keyboard_markup import InlineKeyboardMarkup
 from aiogram.types.inline_keyboard_button import InlineKeyboardButton
 
+from bot.roles.general.keyboards.reply.back_button import back_button
 from bot.languages.keyboards import lang
 from bot.utils import get_user
 
@@ -28,5 +29,6 @@ def get_settings_markup(language, user_id):
             [switch_role_button],
             [change_language_button],
             [logout_button],
+            [back_button(language)],
         ]
     )

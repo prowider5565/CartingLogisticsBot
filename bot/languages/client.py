@@ -1,4 +1,9 @@
 lang = {
+    "back": {
+        "uz": "⬅️ Ortga",
+        "ru": "⬅️ Назад",
+        "en": "⬅️ Back",
+    },
     "enter_load_name": {
         "uz": "Yukingizning nomini kiriting:",
         "ru": "Введите название вашего груза:",

@@ -1,4 +1,6 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
+
+from bot.roles.client.keyboards.reply.back_button import reply_back_button
 from bot.constants import regions
 from bot.utils import get_user
 
@@ -17,7 +19,7 @@ def get_regions_keyboard(user_id):
             row = []
     if row:
         keyboards.append(row)  # Add any remaining buttons
-
+    keyboards.append([reply_back_button(user_id)])
     keyboard = ReplyKeyboardMarkup(
         keyboard=keyboards, resize_keyboard=True, one_time_keyboard=True
     )
@@ -26,7 +28,7 @@ def get_regions_keyboard(user_id):
 
 def get_districts_keyboard(user_id, region):
     user = get_user(user_id)
-    keyboards = []
+    keyboards = [[reply_back_button(user_id)]]
     district_labels = regions[user["locale"]][region]
 
     # Group buttons into rows of 3

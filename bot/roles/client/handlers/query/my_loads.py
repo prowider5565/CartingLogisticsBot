@@ -1,44 +1,16 @@
 from aiogram import Router, types
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 import requests
 
+from bot.roles.general.keyboards.reply.back_button import get_inline_back
+from bot.roles.client.generators.pagination import get_loads_markup
+from bot.middleware.auth import AuthenticationMiddleware
 from bot.utils import get_user, logger as l
+from bot.constants import ITEMS_PER_PAGE
 from bot.settings import settings
 
 
 loads_router = Router()
-
-ITEMS_PER_PAGE = 2  # Number of loads per page
-
-
-def get_loads_markup(loads, current_page):
-    keyboards = []
-    # Add load buttons
-    for i, load in enumerate(loads):
-        keyboards.append(
-            InlineKeyboardButton(
-                text=f"{i + 1}. {load['name']}",
-                callback_data=f"load_detail_{current_page}_{i}",
-            )
-        )
-
-    # Add navigation buttons
-    if current_page > 1:
-        keyboards.append(
-            InlineKeyboardButton(
-                text="<< Previous", callback_data=f"my_loads_{current_page - 1}"
-            )
-        )
-    if len(loads) == ITEMS_PER_PAGE:
-        keyboards.append(
-            InlineKeyboardButton(
-                text="Next >>", callback_data=f"my_loads_{current_page + 1}"
-            )
-        )
-
-    markup = InlineKeyboardMarkup(inline_keyboard=[keyboards], row_width=1)
-
-    return markup
+loads_router.message.middleware.register(AuthenticationMiddleware())
 
 
 @loads_router.callback_query(lambda query: query.data.startswith("my_loads"))
@@ -110,4 +82,6 @@ async def load_detail_handler(query: types.CallbackQuery):
         f"Receive Region: {load['receive_region']}, {load['receive_district']}"
     )
 
-    await query.message.answer(load_detail)
+    await query.message.answer(
+        load_detail, reply_markup=get_inline_back(user["locale"])
+    )

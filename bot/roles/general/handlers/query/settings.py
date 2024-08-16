@@ -1,11 +1,13 @@
 from aiogram import Router, types
 
 from bot.roles.general.keyboards.inline.settings import get_settings_markup
+from bot.middleware.auth import AuthenticationMiddleware
 from bot.languages.general import lang
 from bot.utils import get_user
 
 
 settings_router = Router()
+settings_router.message.middleware.register(AuthenticationMiddleware())
 
 
 @settings_router.callback_query(lambda query: query.data == "settings")

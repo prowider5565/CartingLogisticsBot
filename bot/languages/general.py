@@ -1,4 +1,14 @@
 lang = {
+    "enter_fullname": {
+        "uz": "Ismingizni kiriting:",
+        "en": "Enter your full name:",
+        "ru": "Введите ваше полное имя:",
+    },
+    "back": {
+        "uz": "🔙 Ortga",
+        "en": "🔙 Back",
+        "ru": "🔙 Назад",
+    },
     "choose_language": {
         "uz": "Tilingizni tanlang",
         "en": "Choose your language",

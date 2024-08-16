@@ -4,8 +4,7 @@ from aiogram import types, Router
 
 from bot.roles.general.keyboards.inline.user_menu import get_user_menu
 from bot.middleware.auth import AuthenticationMiddleware
-from bot.utils import get_user, logger as l, locale
-from bot.nosql.config import users_collection
+from bot.utils import get_user, locale
 from bot.languages.general import lang
 
 
@@ -19,8 +18,6 @@ async def send_welcome(message: types.Message, state: FSMContext):
     greeting = lang["warm_greeting"](message.from_user.full_name)[
         await locale(message, state)
     ]
-    l.info(list(users_collection.find({"user_id": message.from_user.id})))
-    l.info("USER:            " + str(user))
     await message.answer(
         greeting, reply_markup=get_user_menu(user["role"]["label"], user["locale"])
     )
