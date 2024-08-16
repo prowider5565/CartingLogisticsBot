@@ -30,7 +30,6 @@ class AuthenticationMiddleware(BaseMiddleware):
                 await event.answer(lang["logged_out"][await locale(event, state)])
                 await event.answer(
                     lang["enter_password"][await locale(event, state)],
-                    reply_markup=share_contact_markup(await locale(event, state)),
                 )
                 await state.set_state(LoginState.password)
 

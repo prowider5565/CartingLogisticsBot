@@ -10,7 +10,7 @@ def get_loads_markup(loads, current_page):
     for i, load in enumerate(loads):
         keyboards.append(
             InlineKeyboardButton(
-                text=f"{i + 1}. {load['name']}",
+                text=f"{i + 1}",
                 callback_data=f"load_detail_{current_page}_{i}",
             )
         )

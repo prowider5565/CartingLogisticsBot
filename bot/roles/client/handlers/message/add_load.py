@@ -27,9 +27,11 @@ def translate(key, user_id):
     return lang.get(key, {}).get(language, "en")
 
 
-async def handle_back(message: Message, state: FSMContext, target_state, key):
+async def handle_back(
+    message: Message, state: FSMContext, target_state, key, markup=None
+):
     if message.text in list(lang["back"].values()):
-        await message.answer(translate(key, message.from_user.id))
+        await message.answer(translate(key, message.from_user.id), reply_markup=markup)
         await state.set_state(target_state)
         return True
     return False
@@ -118,7 +120,13 @@ async def height_handler(message: Message, state: FSMContext):
 
 @load_router.message(LoadState.type)
 async def type_handler(message: Message, state: FSMContext):
-    if await handle_back(message, state, LoadState.height, "enter_height"):
+    if await handle_back(
+        message,
+        state,
+        LoadState.height,
+        "enter_height",
+        markup=get_type_markup(message.from_user.id),
+    ):
         return
     await state.update_data(type=message.text)
     await message.answer(
@@ -130,7 +138,13 @@ async def type_handler(message: Message, state: FSMContext):
 
 @load_router.message(LoadState.price)
 async def price_handler(message: Message, state: FSMContext):
-    if await handle_back(message, state, LoadState.type, "select_load_type"):
+    if await handle_back(
+        message,
+        state,
+        LoadState.type,
+        "select_load_type",
+        markup=get_type_markup(message.from_user.id),
+    ):
         return
     if not isfloat(message.text):
         await message.answer(
@@ -168,7 +182,11 @@ async def phone_number_handler(message: Message, state: FSMContext):
 @load_router.message(LoadState.pickup_latlong, F.location)
 async def pickup_latlong_handler(message: types.Message, state: FSMContext):
     if await handle_back(
-        message, state, LoadState.phone_number, "enter_phone_number"
+        message,
+        state,
+        LoadState.phone_number,
+        "enter_phone_number",
+        markup=get_share_location_markup(message.from_user.id),
     ):
         return
     await state.update_data(
@@ -184,7 +202,11 @@ async def pickup_latlong_handler(message: types.Message, state: FSMContext):
 @load_router.message(LoadState.delivery_latlong, F.location)
 async def delivery_latlong_handler(message: types.Message, state: FSMContext):
     if await handle_back(
-        message, state, LoadState.pickup_latlong, "share_pickup_location"
+        message,
+        state,
+        LoadState.pickup_latlong,
+        "share_pickup_location",
+        markup=get_share_location_markup(message.from_user.id),
     ):
         return
     await state.update_data(
@@ -200,7 +222,11 @@ async def delivery_latlong_handler(message: types.Message, state: FSMContext):
 @load_router.message(LoadState.pickup_date)
 async def pickup_date_handler(message: Message, state: FSMContext):
     if await handle_back(
-        message, state, LoadState.delivery_latlong, "share_delivery_location"
+        message,
+        state,
+        LoadState.delivery_latlong,
+        "share_delivery_location",
+        markup=get_share_location_markup(message.from_user.id),
     ):
         return
     await state.update_data(pickup_date=message.text)
@@ -225,7 +251,12 @@ async def delivery_date_handler(message: Message, state: FSMContext):
 
 @load_router.message(LoadState.send_region)
 async def send_region_handler(message: Message, state: FSMContext):
-    if await handle_back(message, state, LoadState.delivery_date, "enter_delivery_date"):
+    if await handle_back(
+        message,
+        state,
+        LoadState.delivery_date,
+        "enter_delivery_date",
+    ):
         return
     await state.update_data(send_region=message.text)
     await message.answer(
@@ -237,7 +268,13 @@ async def send_region_handler(message: Message, state: FSMContext):
 
 @load_router.message(LoadState.send_district)
 async def send_district_handler(message: Message, state: FSMContext):
-    if await handle_back(message, state, LoadState.send_region, "select_send_region"):
+    if await handle_back(
+        message,
+        state,
+        LoadState.send_region,
+        "select_send_region",
+        markup=get_regions_keyboard(message.from_user.id),
+    ):
         return
     await state.update_data(send_district=message.text)
     await message.answer(
@@ -249,8 +286,13 @@ async def send_district_handler(message: Message, state: FSMContext):
 
 @load_router.message(LoadState.receive_region)
 async def receive_region_handler(message: Message, state: FSMContext):
+    data = await state.get_data()
     if await handle_back(
-        message, state, LoadState.send_district, "enter_send_district"
+        message,
+        state,
+        LoadState.send_district,
+        "enter_send_district",
+        markup=get_districts_keyboard(message.from_user.id, data["send_region"]),
     ):
         return
     await state.update_data(receive_region=message.text)
@@ -264,7 +306,11 @@ async def receive_region_handler(message: Message, state: FSMContext):
 @load_router.message(LoadState.receive_district)
 async def receive_district_handler(message: Message, state: FSMContext):
     if await handle_back(
-        message, state, LoadState.receive_region, "select_receive_region"
+        message,
+        state,
+        LoadState.receive_region,
+        "select_receive_region",
+        markup=get_regions_keyboard(message.from_user.id),
     ):
         return
     await state.update_data(receive_district=message.text)
@@ -277,8 +323,13 @@ async def receive_district_handler(message: Message, state: FSMContext):
 
 @load_router.message(LoadState.client_phone)
 async def client_phone_handler(message: Message, state: FSMContext):
+    data = await state.get_data()
     if await handle_back(
-        message, state, LoadState.receive_district, "enter_receive_district"
+        message,
+        state,
+        LoadState.receive_district,
+        "enter_receive_district",
+        markup=get_districts_keyboard(message.from_user.id, data["receive_region"]),
     ):
         return
     if not is_valid_phone_number(message.text):
@@ -297,9 +348,7 @@ async def client_phone_handler(message: Message, state: FSMContext):
 
 @load_router.message(LoadState.client_fullname)
 async def client_fullname_handler(message: Message, state: FSMContext):
-    if await handle_back(
-        message, state, LoadState.client_phone, "enter_client_phone"
-    ):
+    if await handle_back(message, state, LoadState.client_phone, "enter_client_phone"):
         return
     await state.update_data(client_fullname=message.text)
     await message.answer(
@@ -341,9 +390,11 @@ async def receiver_fullname_handler(message: Message, state: FSMContext):
     user = get_user(message.from_user.id)
     headers = {"Authorization": f"Bearer {user['token']['access_token']}"}
     request = requests.post(url, json=user_data, headers=headers)
+    success_message = lang["load_successfully_created"][user["locale"]]
+    load_detail = lang["load_details"](user_data)[user["locale"]]
     if request.status_code == 200:
         await message.answer(
-            lang["load_successfully_created"](user_data)[user["locale"]],
+            text=success_message + load_detail,
             reply_markup=get_user_menu(user["role"]["label"], user["locale"]),
         )
     else:

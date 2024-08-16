@@ -7,6 +7,7 @@ from bot.roles.general.generators.get_scheme import get_context
 from bot.roles.general.states.login_state import LoginState
 from bot.nosql.config import users_collection
 from bot.languages.general import lang
+from bot.roles.general.keyboards.inline.user_menu import get_user_menu
 from bot.settings import settings
 
 
@@ -47,7 +48,13 @@ async def password_handler(message: types.Message, state: FSMContext):
                     message.from_user.full_name,
                 )
             )
-        await message.answer(str(response.json()))
+        accessed_user = get_user(message.from_user.id)
+        await message.answer(
+            lang["warm_greeting"](accessed_user["full_name"])[accessed_user["locale"]],
+            reply_markup=get_user_menu(
+                accessed_user["role"]["label"], accessed_user["locale"]
+            ),
+        )
     else:
         await message.answer(lang["wrong_password"][await locale(message, state)])
         await state.set_state(LoginState.password)

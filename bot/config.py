@@ -6,6 +6,7 @@ import logging
 from bot.roles.client.handlers.query.add_load import load_router as query_load_router
 from bot.roles.general.handlers.message.back_handler import message_back_router
 from bot.roles.general.handlers.query.update_credentials import user_router
+from bot.roles.client.handlers.query.delete_load import delete_loads_router
 from bot.roles.general.handlers.message.register import register_router
 from bot.roles.general.handlers.query.settings import settings_router
 from bot.roles.general.handlers.query.back_handler import back_router
@@ -24,17 +25,21 @@ from bot.roles.client.handlers.message.add_load import (
 logging.basicConfig(level=logging.INFO)
 bot = Bot(token=settings.BOT_TOKEN)
 dp = Dispatcher()
-dp.include_router(message_load_router)
-dp.include_router(message_back_router)
-dp.include_router(query_load_router)
-dp.include_router(register_router)
-dp.include_router(settings_router)
-dp.include_router(command_router)
-dp.include_router(logout_router)
-dp.include_router(login_router)
-dp.include_router(loads_router)
-dp.include_router(back_router)
-dp.include_router(user_router)
+routers = [
+    message_load_router,
+    delete_loads_router,
+    message_back_router,
+    query_load_router,
+    register_router,
+    settings_router,
+    command_router,
+    logout_router,
+    login_router,
+    loads_router,
+    back_router,
+    user_router,
+]
+dp.include_routers(*routers)
 
 
 @dp.message(Command("flushall"))

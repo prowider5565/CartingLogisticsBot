@@ -1,4 +1,29 @@
 lang = {
+    "confirm": {
+        "uz": "✅ Tasdiqlash",
+        "en": "✅ Confirm",
+        "ru": "✅ Подтвердить",
+    },
+    "load_deleted": {
+        "uz": "✅ Yukingiz muvaffaqiyatli ochirib yuborildi!",
+        "en": "✅ Load deleted successfully!",
+        "ru": "✅ Груз удален успешно!",
+    },
+    "cancel": {
+        "uz": "❌ Bekor qilish",
+        "en": "❌ Cancel",
+        "ru": "❌ Отменить",
+    },
+    "are_you_sure": {
+        "uz": "⚠️ Shu yukni o'chirib tashlashga ishonchingiz komilmi?",
+        "ru": "⚠️ Вы уверены, что хотите удалить этот груз?",
+        "en": "⚠️ Are you sure you want to delete this load?",
+    },
+    "delete_this_load": {
+        "uz": "❌ O'chirish",
+        "ru": "❌ удалить",
+        "en": "❌ Delete",
+    },
     "back": {
         "uz": "⬅️ Ortga",
         "ru": "⬅️ Назад",
@@ -50,9 +75,9 @@ lang = {
         "en": "Please select the type of your load:",
     },
     "enter_price": {
-        "uz": "Iltimos, narxni kiriting:",
-        "ru": "Пожалуйста, введите цену:",
-        "en": "Please enter the price:",
+        "uz": "Iltimos, narxni kiriting (USD):",
+        "ru": "Пожалуйста, введите цену (USD):",
+        "en": "Please enter the price (USD):",
     },
     "invalid_price": {
         "uz": "Noto'g'ri narx. Iltimos, raqam kiriting.",
@@ -129,9 +154,13 @@ lang = {
         "ru": "Пожалуйста, введите полное имя получателя:",
         "en": "Please enter the receiver's full name:",
     },
-    "load_successfully_created": lambda data: {
+    "load_successfully_created": {
+        "en": f"✅ Load successfully created!\n\n",
+        "ru": f"✅ Ваш груз успешно создан!\n\n",
+        "uz": f"✅ Yukingiz muvaffaqiyatli yaratildi!\n\n",
+    },
+    "load_details": lambda data: {
         "en": (
-            f"✅ Load successfully created!\n\n"
             f"📦 Name: {data['name']}\n"
             f"⚖️ Weight: {data['weight']} kg\n"
             f"📏 Dimensions: {data['width']}x{data['length']}x{data['height']} cm\n"
@@ -150,7 +179,6 @@ lang = {
             f"👤 Receiver Full Name: {data['receiver_fullname']}"
         ),
         "uz": (
-            f"✅ Yukingiz muvaffaqiyatli yaratildi!\n\n"
             f"📦 Nomi: {data['name']}\n"
             f"⚖️ Og'irligi: {data['weight']} kg\n"
             f"📏 O'lchamlari: {data['width']}x{data['length']}x{data['height']} sm\n"
@@ -169,7 +197,6 @@ lang = {
             f"👤 Qabul qiluvchi To'liq Ismi: {data['receiver_fullname']}"
         ),
         "ru": (
-            f"✅ Ваш груз успешно создан!\n\n"
             f"📦 Наименование: {data['name']}\n"
             f"⚖️ Вес: {data['weight']} кг\n"
             f"📏 Размеры: {data['width']}x{data['length']}x{data['height']} см\n"

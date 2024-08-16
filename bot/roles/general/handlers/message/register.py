@@ -44,12 +44,10 @@ async def phone_number_handler(message: types.Message, state: FSMContext):
         await message.answer(lang["invalid_phone_number"][current_locale])
         await state.set_state(Registration.phone_number)
         return
-    l.info("Phone number >>>>>>>>>>>>>>>>>>>>> " + phone_number)
     request_otp = requests.get(
         f"{settings.DOMAIN}/v1/check_phone?username={phone_number}"
     )
     if request_otp.json():
-        l.info(request_otp.json())
         if request_otp.json()["data"]["check_phone"]:
             await message.answer(lang["phone_number_already_exists"][current_locale])
             await message.answer(lang["login_instead"][current_locale])
@@ -76,7 +74,6 @@ async def otp_handler(message: types.Message, state: FSMContext):
     response = requests.put(
         f"{settings.DOMAIN}/v1/confirmed_sms?id={data['sms_id']}&sms_code={int(message.text)}"
     )
-    l.info(response.json())
     context = response.json()
     if context.get("data", None) is None:
         await message.answer(lang["incorrect_otp_code"][current_locale])
@@ -100,16 +97,12 @@ async def password_handler(message: types.Message, state: FSMContext):
         "role": [settings.DEFAULT_ROLE_ID],
         "role_id": settings.DEFAULT_ROLE_ID,
     }
-    l.info(context)
     response = requests.post(f"{settings.DOMAIN}/v1/register_user", json=context)
     await message.answer(
         lang["Registration_succeeded"][current_locale],
         reply_markup=get_user_menu("client", data["lang"]),
     )
     if response.status_code == 200:
-        l.info(list(users_collection.find({})))
-        l.info("User credentials are saved to daabase successfully...")
-        l.info(response.json())
         users_collection.insert_one(
             get_context(
                 message.from_user.id,

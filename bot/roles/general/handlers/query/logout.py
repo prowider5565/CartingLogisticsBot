@@ -21,7 +21,6 @@ async def logout_handler(query: types.CallbackQuery, state: FSMContext):
             {"user_id": query.message.chat.id},
             {"$set": {"credentials.status": "LOGGED_OUT"}},
         )
-        l.info(list(users_collection.find({"user_id": query.message.chat.id})))
         await query.message.answer(lang["logout_success"][current_lang])
     else:
         await query.message.answer(

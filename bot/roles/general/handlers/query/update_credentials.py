@@ -3,6 +3,7 @@ from aiogram import Router, types
 import requests
 
 from bot.roles.general.keyboards.reply.back_button import get_reply_back
+from bot.roles.general.keyboards.inline.user_menu import get_user_menu
 from bot.roles.general.keyboards.reply.lang import language_keyboards
 from bot.roles.general.keyboards.inline.roles import get_role_markup
 from bot.roles.general.states.user_state import UserState
@@ -38,7 +39,6 @@ async def fullname_handler(message: types.Message, state: FSMContext):
         "fullName": message.text,
         "roles": [user["role"]["id"]],
     }
-    l.info(data)
     headers = {"Authorization": f"Bearer {user['token']['access_token']}"}
     request = requests.post(url=url, json=data, headers=headers)
     await message.answer(str(request.json()))
@@ -68,7 +68,10 @@ async def proceed_language_update_handler(message: types.Message, state: FSMCont
         {"user_id": message.from_user.id},
         {"$set": {"credentials.locale": LANGUAGE[message.text]}},
     )
-    await message.answer(lang["lang_set_successfully"][LANGUAGE[message.text]])
+    await message.answer(
+        lang["lang_set_successfully"][LANGUAGE[message.text]],
+        reply_markup=get_user_menu(role=user["role"]["label"], language=user["locale"]),
+    )
 
 
 @user_router.callback_query(lambda query: query.data == "switch_role")

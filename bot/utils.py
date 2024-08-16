@@ -19,16 +19,13 @@ async def silent_delete_message(message):
 
 def get_user(user_id: int) -> dict:
     user = users_collection.find_one({"user_id": user_id})
-    logger.info(user)
     if not user:
-        logger.info("USER DOES NOT EXIST BROOOOOOOOOOOOOOOOOOOOOOO")
         return {"status": "NOT_REGISTERED"}
 
     credentials = user.get("credentials", {})
     token = credentials.get("token", {}).get("access_token")
 
     if not token:
-        logger.info("THERE IS NO TOKEN +=====================================")
         credentials["status"] = "LOGGED_OUT"
         return credentials
 

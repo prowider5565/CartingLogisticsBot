@@ -1,11 +1,12 @@
 from aiogram import Router, types
 import requests
 
-from bot.roles.general.keyboards.reply.back_button import get_inline_back
+from bot.roles.client.keyboards.inline.delete_load import get_delete_load_button
 from bot.roles.client.generators.pagination import get_loads_markup
 from bot.middleware.auth import AuthenticationMiddleware
 from bot.utils import get_user, logger as l
 from bot.constants import ITEMS_PER_PAGE
+from bot.languages.client import lang
 from bot.settings import settings
 
 
@@ -48,7 +49,6 @@ async def my_loads_handler(query: types.CallbackQuery):
 @loads_router.callback_query(lambda query: query.data.startswith("load_detail_"))
 async def load_detail_handler(query: types.CallbackQuery):
     data_parts = query.data.split("_")
-    l.info(data_parts)
 
     # Ensure there are exactly 3 parts: 'load_detail', current_page, and index
     if len(data_parts) != 4:
@@ -72,16 +72,8 @@ async def load_detail_handler(query: types.CallbackQuery):
         return
 
     load = loads[load_index]
-
-    # Create load detail message
-    load_detail = (
-        f"Name: {load['name']}\n"
-        f"Price: {load['price']}\n"
-        f"Phone: {load['phone_number']}\n"
-        f"Send Region: {load['send_region']}, {load['send_district']}\n"
-        f"Receive Region: {load['receive_region']}, {load['receive_district']}"
-    )
-
+    detail_message = lang["load_details"](load)[user["locale"]]
     await query.message.answer(
-        load_detail, reply_markup=get_inline_back(user["locale"])
+        text=detail_message,
+        reply_markup=get_delete_load_button(load["id"], query.message.chat.id),
     )
