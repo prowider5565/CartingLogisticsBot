@@ -53,9 +53,12 @@ def is_valid_phone_number(phone: str) -> bool:
 
 def get_phone_number(message):
     if message.content_type == "text":
+        logger.info("TEXT TYPE OF PHONE NUMBER")
         phone_number = message.text
     else:
+        logger.info("CONTACT TYPE OF PHONE NUMBER")
         phone_number = message.contact.phone_number
+    logger.info("Phone number in function get_phone_number(): " + phone_number)
     if not (
         phone_number.startswith("+998")
         and phone_number[1:].isdigit()

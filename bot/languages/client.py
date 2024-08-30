@@ -1,4 +1,9 @@
 lang = {
+    "load_not_found": {
+        "uz": "��� Yuklaringiz topilmadi!",
+        "en": "��� No loads found!",
+        "ru": "��� Не найдено грузов!",
+    },
     "confirm": {
         "uz": "✅ Tasdiqlash",
         "en": "✅ Confirm",

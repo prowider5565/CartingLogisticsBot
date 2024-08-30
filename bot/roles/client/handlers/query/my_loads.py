@@ -39,11 +39,13 @@ async def my_loads_handler(query: types.CallbackQuery):
     message_text = "\n".join(
         [f"{i + 1}. {load['name']}" for i, load in enumerate(paginated_loads)]
     )
-
-    # Update message with loads and navigation buttons
-    await query.message.edit_text(
-        message_text, reply_markup=get_loads_markup(paginated_loads, current_page)
-    )
+    if message_text:
+        # Update message with loads and navigation buttons
+        await query.message.edit_text(
+            message_text, reply_markup=get_loads_markup(paginated_loads, current_page)
+        )
+    else:
+        await query.message.answer(lang["load_not_found"][user["locale"]])
 
 
 @loads_router.callback_query(lambda query: query.data.startswith("load_detail_"))

@@ -26,3 +26,6 @@ async def logout_handler(query: types.CallbackQuery, state: FSMContext):
         await query.message.answer(
             lang["not_registered"][query.message.from_user.language_code]
         )
+
+
+
